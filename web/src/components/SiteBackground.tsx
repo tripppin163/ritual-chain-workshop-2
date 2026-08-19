@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import MoltenMetal from "./reactbits/MoltenMetal";
 
@@ -15,6 +16,11 @@ import MoltenMetal from "./reactbits/MoltenMetal";
  */
 export function SiteBackground() {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const pathname = usePathname();
+
+  // Full strength where the page is numbers and controls; dimmed where it is prose,
+  // because embers drifting behind a paragraph make it harder to read.
+  const proseHeavy = pathname !== "/" && !pathname.startsWith("/market");
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -28,8 +34,9 @@ export function SiteBackground() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10"
+      className="pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700"
       style={{
+        opacity: proseHeavy ? 0.28 : 1,
         maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 88%)",
         WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 88%)",
       }}

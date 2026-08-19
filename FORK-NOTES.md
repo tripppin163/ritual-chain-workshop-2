@@ -169,7 +169,7 @@ appears on the primary action, the live oracle number and the price line, and al
 nowhere else. Status never rides on colour alone: every state ships a dot, a word, and
 for a settled market its outcome.
 
-Two screens:
+Three screens, split so the one people act on stays about acting:
 
 - **Markets** — every market with its pool, its resolution rule, the Scheduler booking
   and a live countdown; a create form validated against the contract's own limits; and
@@ -177,14 +177,26 @@ Two screens:
 - **One market** — the implied YES price after every bet, where the market sits in the
   run it booked for itself, and its whole history read from the contract's logs. There
   is no indexer and no backend behind any of it.
+- **How it works** — the loop, the precompiles involved, what happens when the oracle
+  goes quiet, and the questions that kept coming up. Everything explanatory lives here
+  rather than as paragraphs wrapped around the controls.
+
+A molten field sits behind the page (React Bits' MoltenMetal, MIT), masked so it is
+strongest behind the header and dimmed to a quarter on the prose page. Cards lean a few
+degrees toward the pointer with a sheen that follows it. Both stop for anyone who asked
+for reduced motion, and the tilt never runs on a coarse pointer.
 
 The price chart is one series rather than a YES/NO pair on purpose. The second colour
 would have to be a grey, which reads as "no category" and fails a categorical palette
 check; one line carries the same information, because NO is its complement.
 
-| Markets | One market | Mobile |
-|---|---|---|
-| ![Markets](docs/ui-markets.png) | ![Market detail](docs/ui-market-detail.png) | ![Mobile](docs/ui-mobile.png) |
+| Markets | One market |
+|---|---|
+| ![Markets](docs/ui-markets.png) | ![Market detail](docs/ui-market-detail.png) |
+
+| How it works | Mobile |
+|---|---|
+| ![How it works](docs/ui-how-it-works.png) | ![Mobile](docs/ui-mobile.png) |
 
 Every screenshot is a local run, not a mockup: the block height, the pool and the
 observed value are read from the node, and the oracle number is a live ETH price.

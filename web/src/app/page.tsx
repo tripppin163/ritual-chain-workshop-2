@@ -1,22 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { formatEther, type Address } from "viem";
+import { formatEther } from "viem";
 import { predictAbi } from "@/lib/predict-abi";
-import {
-  HAS_ADDRESS,
-  PREDICT_ADDRESS,
-  RPC_URL,
-  activeChain,
-  connectWallet,
-  publicClient,
-} from "@/lib/chain";
+import { HAS_ADDRESS, PREDICT_ADDRESS, RPC_URL, activeChain, publicClient } from "@/lib/chain";
 import { ritual, shortAddress, type Market } from "@/lib/market";
 import { useTransactions, writeContract } from "@/lib/tx";
 import { MarketCard, readStakes, type Stakes } from "@/components/MarketCard";
 import { CreateMarketForm } from "@/components/CreateMarketForm";
 import { OraclePreview } from "@/components/OraclePreview";
 import { MarketCardSkeleton } from "@/components/Skeleton";
+import { Tilt } from "@/components/Tilt";
 import { ToastBar } from "@/components/ToastBar";
 
 type ChainState = {
@@ -31,7 +26,7 @@ export default function Page() {
   const [stakes, setStakes] = useState<Record<string, Stakes>>({});
   const [error, setError] = useState<string>();
 
-  const { toast, dismiss, send, account, setAccount } = useTransactions(() => refresh());
+  const { toast, dismiss, send, account } = useTransactions(() => refresh());
 
   const refresh = useCallback(async () => {
     if (!HAS_ADDRESS) return;
@@ -80,22 +75,18 @@ export default function Page() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 pb-24 sm:px-8">
-      <header className="pt-12 pb-8 sm:pt-16">
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div className="max-w-lg">
-            <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-[40px]">
-              Ritual Predict
-            </h1>
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-              Stake on a yes-or-no question. When betting closes, nobody presses resolve and
-              no backend runs: the Scheduler wakes the contract, the HTTP precompile reads
-              the oracle inside a TEE, and the market settles itself.
-            </p>
-          </div>
-          <WalletButton account={account} onConnect={setAccount} />
-        </div>
+      <header className="pt-10 pb-8">
+        <h1 className="text-[28px] leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-[34px]">
+          Markets that settle themselves
+        </h1>
+        <p className="mt-2 text-[15px] text-ink-soft">
+          Nobody presses resolve.{" "}
+          <Link href="/how-it-works" className="text-accent transition-opacity hover:opacity-80">
+            How it works →
+          </Link>
+        </p>
 
-        <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-hairline pt-6 sm:grid-cols-4">
+        <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-hairline pt-6 sm:grid-cols-4">
           <Stat label="Network">
             {activeChain.name}
             <span className="ml-1.5 text-ink-faint">{activeChain.id}</span>
@@ -129,8 +120,8 @@ export default function Page() {
           )}
 
           {chain?.markets.map((market) => (
+            <Tilt key={market.id.toString()}>
             <MarketCard
-              key={market.id.toString()}
               market={market}
               block={chain.block}
               blockTimeMs={chain.blockTimeMs}
@@ -152,6 +143,7 @@ export default function Page() {
                 )
               }
             />
+            </Tilt>
           ))}
         </section>
 
@@ -168,9 +160,11 @@ export default function Page() {
             />
           </section>
 
-          <section className="card p-5 sm:p-6">
-            <OraclePreview />
-          </section>
+          <Tilt>
+            <section className="card p-5 sm:p-6">
+              <OraclePreview />
+            </section>
+          </Tilt>
         </aside>
       </div>
 
@@ -184,41 +178,6 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
     <div>
       <dt className="label">{label}</dt>
       <dd className="tabular mt-1 text-[15px] text-ink">{children}</dd>
-    </div>
-  );
-}
-
-function WalletButton({
-  account,
-  onConnect,
-}: {
-  account?: Address;
-  onConnect: (account: Address) => void;
-}) {
-  const [error, setError] = useState<string>();
-
-  return (
-    <div className="text-right">
-      <button
-        type="button"
-        onClick={async () => {
-          try {
-            const { account: connected } = await connectWallet();
-            onConnect(connected);
-            setError(undefined);
-          } catch (connectError) {
-            setError((connectError as Error).message);
-          }
-        }}
-        className={
-          account
-            ? "tabular rounded-lg border border-line bg-surface px-4 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-hover"
-            : "rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
-        }
-      >
-        {account ? shortAddress(account) : "Connect wallet"}
-      </button>
-      {error && <p className="mt-2 max-w-[16rem] text-[13px] text-danger">{error}</p>}
     </div>
   );
 }

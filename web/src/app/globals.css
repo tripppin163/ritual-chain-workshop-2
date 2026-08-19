@@ -108,3 +108,46 @@ body {
     0 0 0 4px rgba(249, 115, 22, 0.6);
   border-radius: 8px;
 }
+
+/* ── Depth ──────────────────────────────────────────────────────────────────
+ * The card leans toward the pointer and a sheen tracks it. Both are driven by
+ * custom properties the Tilt component writes; with no pointer over the card
+ * they stay at zero, so the static rendering is the flat one.
+ */
+.tilt {
+  perspective: 1200px;
+}
+
+.tilt-inner {
+  position: relative;
+  height: 100%;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.tilt-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+  pointer-events: none;
+  opacity: var(--sheen-opacity, 0);
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    420px circle at var(--sheen-x, 50%) var(--sheen-y, 50%),
+    rgba(249, 115, 22, 0.1),
+    transparent 60%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .tilt-sheen {
+    display: none;
+  }
+}

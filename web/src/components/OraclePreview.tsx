@@ -65,11 +65,7 @@ export function OraclePreview() {
         {error ?? JSON.stringify(payload ?? {}, null, 2)}
       </pre>
 
-      <p className="label mt-3 leading-relaxed">
-        <code>.price</code> is pulled out on-chain by the jq precompile as a uint256, so it
-        has to stay a bare integer. Add <code>?price=4500</code> to force a value during a
-        demo.
-      </p>
+      <p className="label mt-3">What an executor would read right now.</p>
     </div>
   );
 }

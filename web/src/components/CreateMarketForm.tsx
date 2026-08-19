@@ -163,11 +163,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
         {busy ? "Creating…" : disabled ? "Connect a wallet to create" : "Create market"}
       </button>
 
-      <p className="label leading-relaxed">
-        Creating a market books its own resolution with the Scheduler in the same
-        transaction: three attempts, 200 blocks apart, paid from the contract&apos;s
-        prepaid balance.
-      </p>
+      <p className="label">Books its own resolution in the same transaction.</p>
     </form>
   );
 }

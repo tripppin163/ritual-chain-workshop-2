@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Nav } from "@/components/Nav";
 import { SiteBackground } from "@/components/SiteBackground";
+import { WalletProvider } from "@/lib/wallet";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -22,7 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to markets
         </a>
         <SiteBackground />
-        {children}
+        <WalletProvider>
+          <Nav />
+          {children}
+        </WalletProvider>
       </body>
     </html>
   );
