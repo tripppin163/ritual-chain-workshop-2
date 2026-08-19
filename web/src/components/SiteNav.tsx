@@ -3,6 +3,7 @@
 import { shortAddress } from "@/lib/market";
 import { useWallet } from "@/lib/wallet";
 import CardNav, { type CardNavItem } from "./reactbits/CardNav";
+import { DocsIcon, PageIcon, RepoIcon, SiteIcon, SocialIcon } from "./icons";
 
 /**
  * The header: a bar that opens into three cards.
@@ -18,9 +19,24 @@ const ITEMS: CardNavItem[] = [
     bgColor: "#141417",
     textColor: "#fafaf9",
     links: [
-      { label: "How it works", href: "/how-it-works", ariaLabel: "How a market settles itself" },
-      { label: "Architecture", href: "/architecture", ariaLabel: "The contracts and precompiles behind it" },
-      { label: "About", href: "/about", ariaLabel: "What this project is" },
+      {
+        label: "How it works",
+        href: "/how-it-works",
+        ariaLabel: "How a market settles itself",
+        icon: <PageIcon />,
+      },
+      {
+        label: "Architecture",
+        href: "/architecture",
+        ariaLabel: "The contracts and precompiles behind it",
+        icon: <PageIcon />,
+      },
+      {
+        label: "About",
+        href: "/about",
+        ariaLabel: "What this project is",
+        icon: <PageIcon />,
+      },
     ],
   },
   {
@@ -28,14 +44,27 @@ const ITEMS: CardNavItem[] = [
     bgColor: "#17171b",
     textColor: "#fafaf9",
     links: [
-      { label: "ritual.net", href: "https://ritual.net", ariaLabel: "Ritual's site", external: true },
+      {
+        label: "ritual.net",
+        href: "https://ritual.net",
+        ariaLabel: "Ritual's site",
+        external: true,
+        icon: <SiteIcon />,
+      },
       {
         label: "Documentation",
         href: "https://docs.ritualfoundation.org",
         ariaLabel: "Ritual Chain documentation",
         external: true,
+        icon: <DocsIcon />,
       },
-      { label: "@ritualnet", href: "https://x.com/ritualnet", ariaLabel: "Ritual on X", external: true },
+      {
+        label: "@ritualnet",
+        href: "https://x.com/ritualnet",
+        ariaLabel: "Ritual on X",
+        external: true,
+        icon: <SocialIcon />,
+      },
     ],
   },
   {
@@ -48,18 +77,21 @@ const ITEMS: CardNavItem[] = [
         href: "https://github.com/tripppin163/ritual-chain-workshop-2",
         ariaLabel: "The fork on GitHub",
         external: true,
+        icon: <RepoIcon />,
       },
       {
         label: "Workshop starter",
         href: "https://github.com/cozfuttu/ritual-chain-workshop-2",
         ariaLabel: "The workshop's starter repository",
         external: true,
+        icon: <RepoIcon />,
       },
       {
         label: "ritual-net",
         href: "https://github.com/ritual-net",
         ariaLabel: "Ritual on GitHub",
         external: true,
+        icon: <RepoIcon />,
       },
     ],
   },

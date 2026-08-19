@@ -13,7 +13,8 @@
  *   - the hardcoded "Get Started" button became an optional `cta` node, which is where
  *     the wallet connection lives here
  *   - links carry an `external` flag: internal ones render as a Next <Link> so
- *     navigation does not reload the page
+ *     navigation does not reload the page, and an optional `icon` in place of the
+ *     default arrow
  *   - the container is fixed rather than absolute, so the nav stays reachable while
  *     scrolling a long board of markets
  */
@@ -35,6 +36,8 @@ type CardNavLink = {
   ariaLabel: string;
   /** Off-site links open in a new tab; internal ones route without a reload. */
   external?: boolean;
+  /** Shown in place of the default arrow, so the kind of destination reads at a glance. */
+  icon?: React.ReactNode;
 };
 
 export type CardNavItem = {
@@ -256,7 +259,7 @@ const CardNav: React.FC<CardNavProps> = ({
                       rel="noreferrer"
                       aria-label={lnk.ariaLabel}
                     >
-                      <ArrowUpRight className="nav-card-link-icon shrink-0" />
+                      {lnk.icon ?? <ArrowUpRight className="nav-card-link-icon shrink-0" />}
                       {lnk.label}
                     </a>
                   ) : (
@@ -266,7 +269,7 @@ const CardNav: React.FC<CardNavProps> = ({
                       href={lnk.href as Route}
                       aria-label={lnk.ariaLabel}
                     >
-                      <ArrowUpRight className="nav-card-link-icon shrink-0" />
+                      {lnk.icon ?? <ArrowUpRight className="nav-card-link-icon shrink-0" />}
                       {lnk.label}
                     </Link>
                   );
