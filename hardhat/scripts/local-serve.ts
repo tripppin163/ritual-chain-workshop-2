@@ -20,6 +20,10 @@ import { COMPARATOR, installRitualMocks } from "./local-stack.ts";
 const BLOCK_TIME_MS = 1_000n; // matches the interval mining set below
 const ORACLE_URL = process.env.ORACLE_URL ?? "http://127.0.0.1:3000/api/oracle/eth";
 
+/** Long enough to click around in. Overridable for a shorter or longer demo. */
+const BETTING_SECONDS = BigInt(process.env.BETTING_SECONDS ?? 1_800);
+const RESOLVE_DELAY_SECONDS = BigInt(process.env.RESOLVE_DELAY_SECONDS ?? 60);
+
 const connection = await network.create({
   network: process.env.LOCAL_NETWORK ?? "localhost",
   chainType: "l1",
@@ -39,16 +43,35 @@ await predict.write.createMarket([
     jsonPath: ".price",
     target: 4_000n,
     comparator: COMPARATOR.gte,
-    bettingSeconds: 300n,
-    resolveDelaySeconds: 60n,
+    bettingSeconds: BETTING_SECONDS,
+    resolveDelaySeconds: RESOLVE_DELAY_SECONDS,
   },
 ]);
+
+// A second, deliberately short market, so the self-resolving part can be watched
+// happening rather than waited out. Skip with DEMO_SHORT_MARKET=0.
+if (process.env.DEMO_SHORT_MARKET !== "0") {
+  await predict.write.createMarket([
+    {
+      question: "Will ETH/USD be under $10,000 in a couple of minutes?",
+      oracleUrl: ORACLE_URL,
+      jsonPath: ".price",
+      target: 10_000n,
+      comparator: COMPARATOR.lt,
+      bettingSeconds: 60n,
+      resolveDelaySeconds: 30n,
+    },
+  ]);
+}
 
 // A couple of stakes, so the UI opens on a market with a real pool rather than an
 // empty one. Skip with DEMO_BETS=0.
 if (process.env.DEMO_BETS !== "0" && alice && bob) {
-  await predict.write.bet([1n, true], { account: alice.account, value: parseEther("2") });
-  await predict.write.bet([1n, false], { account: bob.account, value: parseEther("3") });
+  const count = await predict.read.marketCount();
+  for (let id = 1n; id <= count; id++) {
+    await predict.write.bet([id, true], { account: alice.account, value: parseEther("2") });
+    await predict.write.bet([id, false], { account: bob.account, value: parseEther("3") });
+  }
 }
 
 // One block per second, so blockTimeMs above is the truth and the UI's countdowns are
@@ -69,10 +92,13 @@ await writeFile(
   "utf8",
 );
 
-const market = await predict.read.getMarket([1n]);
 console.log(`RitualPredict      ${predict.address}`);
 console.log(`prepaid fees       ${formatEther(await predict.read.executionBalance())} RITUAL`);
-console.log(`demo market #1     closes at block ${market.closeBlock}, resolves at ${market.resolveBlock}`);
+for (const market of await predict.read.getMarkets()) {
+  console.log(
+    `market #${market.id}          closes at block ${market.closeBlock}, resolves at ${market.resolveBlock}`,
+  );
+}
 console.log(`current block      ${await publicClient.getBlockNumber()} (mining 1 block/second)`);
 console.log(`wrote              ${envPath}`);
 console.log("");

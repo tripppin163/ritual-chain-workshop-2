@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
-import { Archivo, Archivo_Black, Barlow, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const display = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-archivo",
-});
-const displayAlt = Archivo({ subsets: ["latin"], variable: "--font-archivo-alt" });
-const body = Barlow({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-barlow",
-});
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono-jb" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Ritual Predict",
@@ -24,16 +13,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${display.variable} ${displayAlt.variable} ${body.variable} ${mono.variable} antialiased`}
-      >
+      <body className={inter.variable}>
         <a
           href="#markets"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:bg-elevated focus:px-3 focus:py-2 focus:text-ritual-green"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-elevated focus:px-3 focus:py-2 focus:text-accent"
         >
           Skip to markets
         </a>
-        <div className="relative z-10">{children}</div>
+        {children}
       </body>
     </html>
   );

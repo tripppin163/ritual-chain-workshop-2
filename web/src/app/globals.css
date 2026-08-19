@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 /*
- * Ritual dApp design tokens. Dark-mode-first by construction, not as an option: the
- * glows and the mesh only read on black.
+ * Tokens lifted from Ritual's own builder site (skills.ritualfoundation.org), so this
+ * app and their docs read as the same product: near-neutral zinc surfaces, one orange
+ * accent, three status colours, Inter throughout.
  *
- * Green certifies (verified, settled, connected). Gold warns (pending, fees, retries).
- * Pink marks machine intelligence. Lime is for data the eye should land on. Nothing
- * here is decorative — a colour that means nothing is a colour that gets removed.
+ * The restraint is the design. Orange appears on the primary action, the live number
+ * and the price line, and almost nowhere else — when everything is accented, nothing
+ * is. Status colours never carry meaning alone: each ships with a glyph and a word.
  */
 @theme {
-  --color-canvas: #000000;
-  --color-elevated: #111827;
-  --color-surface: #1f2937;
-  --color-hairline: #1f2937;
+  --color-canvas: #09090b;
+  --color-elevated: #111113;
+  --color-surface: #18181b;
+  --color-hover: #1f1f23;
+  --color-hairline: #1c1c1f;
+  --color-line: #27272a;
 
-  --color-ritual-green: #19d184;
-  --color-ritual-lime: #bfff00;
-  --color-ritual-pink: #ff1dce;
-  --color-ritual-gold: #facc15;
-  --color-ritual-red: #ef4444;
+  --color-ink: #fafaf9;
+  --color-ink-soft: #a1a1aa;
+  --color-ink-faint: #71717a;
 
-  /* gray-500 on an elevated surface is 3.7:1 — below AA. gray-400 is the floor. */
-  --color-ink: #d1d5db;
-  --color-ink-soft: #9ca3af;
-  --color-ink-faint: #6b7280;
+  --color-accent: #f97316;
+  --color-accent-muted: #c2410c;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-danger: #ef4444;
 
-  --font-display: var(--font-archivo), system-ui, sans-serif;
-  --font-body: var(--font-barlow), system-ui, sans-serif;
-  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --shadow-card: 0 4px 40px -12px rgba(0, 0, 0, 0.7);
-  --shadow-glow-green: 0 0 30px -5px rgba(25, 209, 132, 0.25);
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 html {
@@ -40,60 +40,64 @@ html {
 body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
-  font-family: var(--font-body);
-  /* A single mesh, anchored off-centre. One atmospheric layer, not a gradient parade. */
-  background-image:
-    radial-gradient(60rem 40rem at 12% -10%, rgba(25, 209, 132, 0.08), transparent 60%),
-    radial-gradient(40rem 30rem at 95% 0%, rgba(255, 29, 206, 0.05), transparent 65%);
-  background-attachment: fixed;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Grain, so the black has a surface instead of being a void. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+/* Numbers that change in place must not jitter. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .label {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   color: var(--color-ink-faint);
 }
 
-.data {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+.card {
+  background-color: var(--color-elevated);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
 }
 
-.rule-line {
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(25, 209, 132, 0.35),
-    var(--color-hairline) 30%,
-    transparent
-  );
+.field {
+  width: 100%;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-ink);
+  transition: border-color 0.15s ease;
+}
+
+.field:hover {
+  border-color: #3f3f46;
+}
+
+.field::placeholder {
+  color: var(--color-ink-faint);
 }
 
 @keyframes pulse-soft {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  50% { opacity: 0.4; }
 }
 
 .pulse-dot {
-  animation: pulse-soft 1.8s ease-in-out infinite;
+  animation: pulse-soft 2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot {
+  .pulse-dot,
+  .animate-pulse {
     animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -101,6 +105,6 @@ body::before {
   outline: none;
   box-shadow:
     0 0 0 2px var(--color-canvas),
-    0 0 0 4px rgba(25, 209, 132, 0.5);
-  border-radius: 0.375rem;
+    0 0 0 4px rgba(249, 115, 22, 0.6);
+  border-radius: 8px;
 }

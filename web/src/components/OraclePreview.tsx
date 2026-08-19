@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 type Payload = { price?: number; asOf?: string; source?: string; note?: string };
 
 /**
- * What the executor would read right now. Worth showing next to the create form: the
+ * What the executor would read right now. Worth showing beside the create form: the
  * market's whole outcome hangs on this one number surviving the jq extraction as an
  * integer.
  */
@@ -41,23 +41,34 @@ export function OraclePreview() {
   const ok = status === 200;
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="label">Demo oracle</span>
-        <span className={`data text-xs ${ok ? "text-ritual-green" : "text-ritual-gold"}`}>
-          <span aria-hidden className="mr-1">{ok ? "✓" : "◌"}</span>
-          {status ? `HTTP ${status}` : "…"}
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="text-[15px] font-medium text-ink">Demo oracle</h2>
+        <span
+          className={`inline-flex items-center gap-2 text-[13px] ${ok ? "text-success" : "text-warning"}`}
+        >
+          <span
+            aria-hidden
+            className={`h-1.5 w-1.5 rounded-full ${ok ? "bg-success" : "bg-warning pulse-dot"}`}
+          />
+          {status ? `HTTP ${status}` : "reading…"}
         </span>
       </div>
 
-      <pre className="data overflow-x-auto border border-hairline bg-surface px-3 py-2 text-xs text-ink-soft">
+      {payload?.price !== undefined && ok && (
+        <p className="tabular mt-4 text-[32px] leading-none font-semibold text-ink">
+          {payload.price.toLocaleString("en-US")}
+        </p>
+      )}
+
+      <pre className="tabular mt-4 overflow-x-auto rounded-lg bg-surface px-4 py-3 text-[12px] leading-relaxed text-ink-soft">
         {error ?? JSON.stringify(payload ?? {}, null, 2)}
       </pre>
 
-      <p className="text-xs text-ink-faint">
-        <code className="data text-ritual-lime">.price</code> is pulled out on-chain by the
-        jq precompile as a uint256, so it has to stay a bare integer. Add{" "}
-        <code className="data">?price=4500</code> to force a value during a demo.
+      <p className="label mt-3 leading-relaxed">
+        <code>.price</code> is pulled out on-chain by the jq precompile as a uint256, so it
+        has to stay a bare integer. Add <code>?price=4500</code> to force a value during a
+        demo.
       </p>
     </div>
   );

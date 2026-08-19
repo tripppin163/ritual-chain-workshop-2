@@ -4,7 +4,7 @@ import { useState } from "react";
 import { activeChain, localChain } from "@/lib/chain";
 import { COMPARATOR, COMPARATOR_LABEL, DEMO_MARKET, type ComparatorKey } from "@/lib/presets";
 
-/** Mirrors the contract's own limits so a bad market is refused before it costs gas. */
+/** Mirrors the contract's own limits, so a bad market is refused before it costs gas. */
 const MIN_BETTING_SECONDS = 30;
 const MIN_RESOLVE_DELAY_SECONDS = 15;
 const MAX_MARKET_SECONDS = 86_400;
@@ -30,9 +30,8 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
   const set = (key: keyof typeof form) => (value: string) =>
     setForm((previous) => ({ ...previous, [key]: value }));
 
-  // Only a problem on the real chain: there the executor runs in the cloud. Against a
-  // local node the "executor" is scripts/local-executor.ts on this machine, and
-  // localhost is exactly where it should point.
+  // Only a problem on the real chain, where the executor runs in the cloud. Against a
+  // local node the executor is a script on this machine, and localhost is correct.
   const localhostOracle =
     activeChain.id !== localChain.id && /localhost|127\.0\.0\.1/.test(form.oracleUrl);
 
@@ -82,7 +81,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
           value={form.question}
           onChange={(event) => set("question")(event.target.value)}
           rows={2}
-          className="w-full resize-none border border-hairline bg-surface px-3 py-2 text-sm text-ink"
+          className="field resize-none"
         />
       </Field>
 
@@ -90,30 +89,29 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
         <input
           value={form.oracleUrl}
           onChange={(event) => set("oracleUrl")(event.target.value)}
-          className="data w-full border border-hairline bg-surface px-3 py-2 text-xs text-ink"
+          className="field text-[13px]"
         />
         {localhostOracle && (
-          <p className="mt-1.5 text-xs text-ritual-gold">
-            <span aria-hidden className="mr-1">◌</span>
+          <p className="mt-2 text-[13px] text-warning">
             The executor runs in the cloud, so localhost will never resolve. Expose{" "}
-            <code className="data">/api/oracle/eth</code> through a tunnel first.
+            <code>/api/oracle/eth</code> through a tunnel first.
           </p>
         )}
       </Field>
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
-        <Field label="JSON path">
+        <Field label="Reads">
           <input
             value={form.jsonPath}
             onChange={(event) => set("jsonPath")(event.target.value)}
-            className="data w-full border border-hairline bg-surface px-3 py-2 text-sm text-ink"
+            className="field tabular"
           />
         </Field>
         <Field label="Test">
           <select
             value={form.comparator}
             onChange={(event) => set("comparator")(event.target.value as ComparatorKey)}
-            className="data border border-hairline bg-surface px-2 py-2 text-sm text-ink"
+            className="field w-auto px-2"
           >
             {(Object.keys(COMPARATOR) as ComparatorKey[]).map((key) => (
               <option key={key} value={key}>
@@ -127,7 +125,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.target}
             onChange={(event) => set("target")(event.target.value)}
             inputMode="numeric"
-            className="data w-full border border-hairline bg-surface px-3 py-2 text-sm text-ink"
+            className="field tabular"
           />
         </Field>
       </div>
@@ -138,7 +136,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.bettingSeconds}
             onChange={(event) => set("bettingSeconds")(event.target.value)}
             inputMode="numeric"
-            className="data w-full border border-hairline bg-surface px-3 py-2 text-sm text-ink"
+            className="field tabular"
           />
         </Field>
         <Field label="Then resolve after" hint="seconds">
@@ -146,14 +144,13 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.resolveDelaySeconds}
             onChange={(event) => set("resolveDelaySeconds")(event.target.value)}
             inputMode="numeric"
-            className="data w-full border border-hairline bg-surface px-3 py-2 text-sm text-ink"
+            className="field tabular"
           />
         </Field>
       </div>
 
       {error && (
-        <p role="alert" className="text-xs text-ritual-red">
-          <span aria-hidden className="mr-1">✗</span>
+        <p role="alert" className="text-[13px] text-danger">
           {error}
         </p>
       )}
@@ -161,14 +158,15 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
       <button
         type="submit"
         disabled={disabled || busy}
-        className="w-full border border-ritual-green px-4 py-2.5 text-sm font-semibold text-ritual-green transition-colors hover:bg-ritual-green/10 disabled:cursor-not-allowed disabled:border-hairline disabled:text-ink-faint"
+        className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-faint"
       >
         {busy ? "Creating…" : disabled ? "Connect a wallet to create" : "Create market"}
       </button>
-      <p className="text-xs text-ink-faint">
+
+      <p className="label leading-relaxed">
         Creating a market books its own resolution with the Scheduler in the same
-        transaction: three attempts, 200 blocks apart, paid from the contract's prepaid
-        balance.
+        transaction: three attempts, 200 blocks apart, paid from the contract&apos;s
+        prepaid balance.
       </p>
     </form>
   );
@@ -185,8 +183,8 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="label">{label}</span>
-      {hint && <span className="ml-2 text-[11px] text-ink-faint lowercase">{hint}</span>}
+      <span className="text-[13px] text-ink-soft">{label}</span>
+      {hint && <span className="ml-1.5 text-[13px] text-ink-faint">{hint}</span>}
       <div className="mt-1.5">{children}</div>
     </label>
   );

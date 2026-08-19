@@ -1,5 +1,7 @@
 "use client";
 
+import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { parseEther, type Address } from "viem";
 import { predictAbi } from "@/lib/predict-abi";
@@ -25,6 +27,7 @@ type Props = {
   blockTimeMs: bigint;
   account?: Address;
   stakes?: Stakes;
+  compact?: boolean;
   onBet: (marketId: bigint, isYes: boolean, value: bigint) => Promise<void>;
   onClaim: (marketId: bigint, amount: bigint) => Promise<void>;
   onRefund: (marketId: bigint, amount: bigint) => Promise<void>;
@@ -36,6 +39,7 @@ export function MarketCard({
   blockTimeMs,
   account,
   stakes,
+  compact = false,
   onBet,
   onClaim,
   onRefund,
@@ -64,167 +68,167 @@ export function MarketCard({
   }
 
   return (
-    <article className="border border-hairline bg-elevated/80 shadow-card">
-      <header className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline px-5 py-4">
+    <article className="card p-5 sm:p-6">
+      <header className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="data text-xs text-ink-faint">#{market.id.toString()}</span>
-            <span className="text-ink-faint">·</span>
-            <span className="data text-xs text-ink-faint">
-              by {shortAddress(market.creator)}
-            </span>
-          </div>
-          <h3 className="mt-1.5 font-display text-lg leading-snug text-ink text-balance">
-            {market.question}
+          <h3 className="text-[17px] leading-snug font-medium text-balance text-ink sm:text-lg">
+            {compact ? (
+              market.question
+            ) : (
+              <Link href={`/market/${market.id.toString()}` as Route} className="transition-colors hover:text-accent">
+                {market.question}
+              </Link>
+            )}
           </h3>
+          <p className="label mt-1">
+            #{market.id.toString()} · by {shortAddress(market.creator)}
+          </p>
         </div>
         <StatePill market={market} />
       </header>
 
-      <div className="space-y-5 px-5 py-5">
+      <div className="mt-5">
         <PoolBar market={market} />
-
-        {/* The resolution rule, fixed at creation. There is no setter for any of it. */}
-        <dl className="grid gap-x-6 gap-y-2 text-xs sm:grid-cols-[auto_1fr]">
-          <dt className="label">Rule</dt>
-          <dd className="data text-ink">
-            <span className="text-ritual-lime">{market.jsonPath}</span>{" "}
-            {COMPARATOR_LABEL[market.comparator]} {market.target.toString()}
-          </dd>
-
-          <dt className="label">Oracle</dt>
-          <dd className="data truncate text-ink-soft" title={market.oracleUrl}>
-            <span aria-hidden className="mr-1.5 text-ritual-green">⇄</span>
-            {market.oracleUrl}
-          </dd>
-
-          <dt className="label">Schedule</dt>
-          <dd className="data text-ink-soft">
-            <span aria-hidden className="mr-1.5 text-ritual-gold">◎</span>
-            id {market.scheduleId.toString()} · fires at block{" "}
-            {market.resolveBlock.toString()} <AttemptDots attempts={market.attempts} />
-          </dd>
-
-          {market.state !== 3 && market.state !== 4 && (
-            <>
-              <dt className="label">Timing</dt>
-              <dd className="data text-ink-soft">
-                {bettingOpen
-                  ? `betting closes in ${countdown(market.closeBlock, block, blockTimeMs)}`
-                  : `resolution in ${countdown(market.resolveBlock, block, blockTimeMs)}`}
-              </dd>
-            </>
-          )}
-
-          {isResolved(market) && (
-            <>
-              <dt className="label">Observed</dt>
-              <dd className="data text-ritual-lime">
-                {market.observedValue.toString()}
-                <span className="ml-2 text-ink-faint">read in the scheduled transaction</span>
-              </dd>
-            </>
-          )}
-
-          {isInvalid(market) && (
-            <>
-              <dt className="label">Invalid</dt>
-              <dd className="text-ritual-red">
-                <span aria-hidden className="mr-1.5">✗</span>
-                {market.invalidReason || "no reason recorded"}
-              </dd>
-            </>
-          )}
-        </dl>
-
-        {myStake > 0n && (
-          <p className="border-l-2 border-ritual-green/40 pl-3 text-xs text-ink-soft">
-            Your stake: <span className="data text-ink">{ritual(stakes!.yes)}</span> YES ·{" "}
-            <span className="data text-ink">{ritual(stakes!.no)}</span> NO
-            {stakes!.settled && <span className="ml-2 text-ink-faint">(already settled)</span>}
-          </p>
-        )}
-
-        {/* Actions follow the lifecycle: bet, then wait, then claim. */}
-        {bettingOpen && account && (
-          <div className="space-y-3 border-t border-hairline pt-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex" role="group" aria-label="Pick a side">
-                {(["yes", "no"] as const).map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => setSide(option)}
-                    aria-pressed={side === option}
-                    className={`border px-4 py-2 text-sm font-semibold tracking-wide uppercase transition-colors ${
-                      side === option
-                        ? "border-ritual-green bg-ritual-green/10 text-ritual-green"
-                        : "border-hairline text-ink-faint hover:border-ink-faint"
-                    } ${option === "no" ? "-ml-px" : ""}`}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-
-              <label className="sr-only" htmlFor={`amount-${market.id}`}>
-                Stake in RITUAL
-              </label>
-              <input
-                id={`amount-${market.id}`}
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                inputMode="decimal"
-                className="data w-28 border border-hairline bg-surface px-3 py-2 text-sm text-ink"
-                aria-describedby={amountError ? `amount-error-${market.id}` : undefined}
-              />
-              <span className="text-xs text-ink-faint">RITUAL</span>
-
-              <button
-                type="button"
-                onClick={placeBet}
-                className="ml-auto border border-ritual-green px-4 py-2 text-sm font-semibold text-ritual-green transition-colors hover:bg-ritual-green/10"
-              >
-                Place bet
-              </button>
-            </div>
-            {amountError && (
-              <p id={`amount-error-${market.id}`} className="text-xs text-ritual-red">
-                {amountError}
-              </p>
-            )}
-          </div>
-        )}
-
-        {!bettingOpen && !isResolved(market) && !isInvalid(market) && (
-          <p className="flex items-center gap-2 border-t border-hairline pt-4 text-xs text-ritual-gold">
-            <span aria-hidden className="pulse-dot">◌</span>
-            Betting is closed. Nobody resolves this — the Scheduler wakes the contract at
-            block {market.resolveBlock.toString()}.
-          </p>
-        )}
-
-        {isResolved(market) && stakes && stakes.claimable > 0n && account && (
-          <button
-            type="button"
-            onClick={() => onClaim(market.id, stakes.claimable)}
-            className="w-full border border-ritual-green px-4 py-2.5 text-sm font-semibold text-ritual-green transition-colors hover:bg-ritual-green/10 sm:w-auto"
-          >
-            Claim {ritual(stakes.claimable)} RITUAL
-          </button>
-        )}
-
-        {isInvalid(market) && stakes && stakes.claimable > 0n && account && (
-          <button
-            type="button"
-            onClick={() => onRefund(market.id, stakes.claimable)}
-            className="w-full border border-dashed border-ritual-gold px-4 py-2.5 text-sm font-semibold text-ritual-gold transition-colors hover:bg-ritual-gold/10 sm:w-auto"
-          >
-            Refund {ritual(stakes.claimable)} RITUAL
-          </button>
-        )}
       </div>
+
+      {/* The resolution rule, fixed at creation. None of it has a setter. */}
+      <dl className="mt-5 space-y-2 text-[13px]">
+        <Row label="Settles on">
+          <span className="tabular text-ink">
+            {market.jsonPath} {COMPARATOR_LABEL[market.comparator]} {market.target.toString()}
+          </span>
+        </Row>
+        <Row label="Oracle">
+          <span className="truncate text-ink-soft" title={market.oracleUrl}>
+            {market.oracleUrl}
+          </span>
+        </Row>
+        <Row label="Scheduler">
+          <span className="text-ink-soft">
+            <span className="tabular">block {market.resolveBlock.toString()}</span>
+            <span className="ml-2 inline-flex items-center gap-1.5">
+              <AttemptDots attempts={market.attempts} />
+            </span>
+          </span>
+        </Row>
+        {!isResolved(market) && !isInvalid(market) && (
+          <Row label={bettingOpen ? "Betting closes" : "Resolves"}>
+            <span className="tabular text-ink-soft">
+              in{" "}
+              {bettingOpen
+                ? countdown(market.closeBlock, block, blockTimeMs)
+                : countdown(market.resolveBlock, block, blockTimeMs)}
+            </span>
+          </Row>
+        )}
+        {isResolved(market) && (
+          <Row label="Observed">
+            <span className="tabular font-medium text-accent">
+              {market.observedValue.toString()}
+            </span>
+          </Row>
+        )}
+        {isInvalid(market) && (
+          <Row label="Invalid">
+            <span className="text-danger">{market.invalidReason || "no reason recorded"}</span>
+          </Row>
+        )}
+      </dl>
+
+      {myStake > 0n && stakes && (
+        <p className="mt-4 rounded-lg bg-surface px-3 py-2 text-[13px] text-ink-soft">
+          Your position: <span className="tabular text-ink">{ritual(stakes.yes)}</span> YES ·{" "}
+          <span className="tabular text-ink">{ritual(stakes.no)}</span> NO
+          {stakes.settled && <span className="ml-2 text-ink-faint">already settled</span>}
+        </p>
+      )}
+
+      {bettingOpen && account && (
+        <div className="mt-5 border-t border-hairline pt-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-lg bg-surface p-1" role="group" aria-label="Pick a side">
+              {(["yes", "no"] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setSide(option)}
+                  aria-pressed={side === option}
+                  className={`rounded-md px-4 py-1.5 text-[13px] font-medium transition-colors ${
+                    side === option
+                      ? "bg-hover text-ink"
+                      : "text-ink-faint hover:text-ink-soft"
+                  }`}
+                >
+                  {option.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <label className="sr-only" htmlFor={`amount-${market.id}`}>
+              Stake in RITUAL
+            </label>
+            <input
+              id={`amount-${market.id}`}
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+              inputMode="decimal"
+              className="field tabular w-24"
+              aria-describedby={amountError ? `amount-error-${market.id}` : undefined}
+            />
+
+            <button
+              type="button"
+              onClick={placeBet}
+              className="ml-auto rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
+            >
+              Place bet
+            </button>
+          </div>
+          {amountError && (
+            <p id={`amount-error-${market.id}`} className="mt-2 text-[13px] text-danger">
+              {amountError}
+            </p>
+          )}
+        </div>
+      )}
+
+      {!bettingOpen && !isResolved(market) && !isInvalid(market) && (
+        <p className="mt-5 flex items-center gap-2 border-t border-hairline pt-5 text-[13px] text-ink-soft">
+          <span aria-hidden className="pulse-dot h-1.5 w-1.5 rounded-full bg-warning" />
+          Betting is closed. Nobody resolves this: the Scheduler wakes the contract at block{" "}
+          <span className="tabular">{market.resolveBlock.toString()}</span>.
+        </p>
+      )}
+
+      {isResolved(market) && stakes && stakes.claimable > 0n && account && (
+        <button
+          type="button"
+          onClick={() => onClaim(market.id, stakes.claimable)}
+          className="mt-5 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 sm:w-auto"
+        >
+          Claim {ritual(stakes.claimable)} RITUAL
+        </button>
+      )}
+
+      {isInvalid(market) && stakes && stakes.claimable > 0n && account && (
+        <button
+          type="button"
+          onClick={() => onRefund(market.id, stakes.claimable)}
+          className="mt-5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-hover sm:w-auto"
+        >
+          Refund {ritual(stakes.claimable)} RITUAL
+        </button>
+      )}
     </article>
+  );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-3">
+      <dt className="label">{label}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </div>
   );
 }
 

@@ -2,10 +2,12 @@
 export const COMPARATOR = { gt: 0, gte: 1, lt: 2, lte: 3 } as const;
 export type ComparatorKey = keyof typeof COMPARATOR;
 
+/** Plain ASCII for the strict pair: Inter has no glyph for the fullwidth forms, and a
+ *  missing glyph renders as a box in the middle of the market's resolution rule. */
 export const COMPARATOR_LABEL: Record<number, string> = {
-  0: "＞",
+  0: ">",
   1: "≥",
-  2: "＜",
+  2: "<",
   3: "≤",
 };
 

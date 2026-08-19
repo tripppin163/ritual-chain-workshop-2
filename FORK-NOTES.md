@@ -36,7 +36,7 @@ So: implement the five, then build everything the README promises.
 | `hardhat/scripts/local-demo.ts` | the whole lifecycle, narrated, offline |
 | `hardhat/scripts/local-serve.ts` | sets up a local chain for the frontend |
 | `hardhat/scripts/local-executor.ts` | plays Scheduler + TEE executor locally |
-| `web/` | the market UI and the demo oracle |
+| `web/` | the market UI, the market detail screen and the demo oracle |
 
 ```
 $ npx hardhat test
@@ -161,27 +161,33 @@ Each of these breaks a path the README tells you to walk:
 ## Frontend
 
 `web/` is Next.js + viem, no wallet-connect stack: one chain, one injected connector.
-Dark by construction, per Ritual's design system — green certifies, gold warns, lime is
-for data, and every state pairs a colour with a glyph and a word so nothing depends on
-colour alone.
 
-It reads markets straight from `getMarkets()` and polls every four seconds. Betting,
-claiming and refunding are the three writes. The oracle panel shows what an executor
-would read right now, which matters because the whole outcome hangs on that number
-surviving the jq extraction as an integer.
+Its tokens are lifted from Ritual's own builder site (skills.ritualfoundation.org), so
+this app and their docs read as the same product: near-neutral zinc surfaces, one orange
+accent, three status colours, Inter throughout. The restraint is the design — orange
+appears on the primary action, the live oracle number and the price line, and almost
+nowhere else. Status never rides on colour alone: every state ships a dot, a word, and
+for a settled market its outcome.
 
-Both screenshots below are a local run, not a mockup — the pool, the block height and
-the observed value are read from the node.
+Two screens:
 
-| Betting open | Settled by itself |
-|---|---|
-| ![Open market](docs/ui-open-market.png) | ![Resolved market](docs/ui-resolved-market.png) |
+- **Markets** — every market with its pool, its resolution rule, the Scheduler booking
+  and a live countdown; a create form validated against the contract's own limits; and
+  the demo oracle showing what an executor would read right now.
+- **One market** — the implied YES price after every bet, where the market sits in the
+  run it booked for itself, and its whole history read from the contract's logs. There
+  is no indexer and no backend behind any of it.
 
-In the second one the Scheduler has fired, the executor has fetched the oracle, and the
-market recorded `observed 1912` against a target of `4000` — so it resolved NO on a real
-price, with one of its three booked attempts used.
+The price chart is one series rather than a YES/NO pair on purpose. The second colour
+would have to be a grey, which reads as "no category" and fails a categorical palette
+check; one line carries the same information, because NO is its complement.
 
----
+| Markets | One market | Mobile |
+|---|---|---|
+| ![Markets](docs/ui-markets.png) | ![Market detail](docs/ui-market-detail.png) | ![Mobile](docs/ui-mobile.png) |
+
+Every screenshot is a local run, not a mockup: the block height, the pool and the
+observed value are read from the node, and the oracle number is a live ETH price.
 
 ## Not done
 
