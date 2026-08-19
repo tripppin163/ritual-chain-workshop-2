@@ -2,6 +2,11 @@
 
 A self-resolving binary prediction market on [Ritual Chain](https://docs.ritualfoundation.org).
 
+> **This fork** implements the five functions the starter leaves blank, adds the mocks
+> and the test suites the README below refers to, builds the `web/` frontend, and makes
+> the whole lifecycle runnable offline while the testnet is down.
+> See **[FORK-NOTES.md](FORK-NOTES.md)** for what changed and how to run it.
+
 Create a market like _"Will ETH/USD be at least $4,000 when this market resolves?"_, stake native
 RITUAL on YES or NO, and watch it settle itself. When the betting window closes, **nobody presses a
 resolve button and no backend cron job runs**. The Ritual Scheduler wakes the contract at a block

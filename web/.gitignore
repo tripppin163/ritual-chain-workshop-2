@@ -1,0 +1,9 @@
+/node_modules
+/.next
+/out
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# Written by hardhat/scripts/local-serve.ts, or by hand from .env.local.example
+.env*.local

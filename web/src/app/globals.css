@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/*
+ * Ritual dApp design tokens. Dark-mode-first by construction, not as an option: the
+ * glows and the mesh only read on black.
+ *
+ * Green certifies (verified, settled, connected). Gold warns (pending, fees, retries).
+ * Pink marks machine intelligence. Lime is for data the eye should land on. Nothing
+ * here is decorative — a colour that means nothing is a colour that gets removed.
+ */
+@theme {
+  --color-canvas: #000000;
+  --color-elevated: #111827;
+  --color-surface: #1f2937;
+  --color-hairline: #1f2937;
+
+  --color-ritual-green: #19d184;
+  --color-ritual-lime: #bfff00;
+  --color-ritual-pink: #ff1dce;
+  --color-ritual-gold: #facc15;
+  --color-ritual-red: #ef4444;
+
+  /* gray-500 on an elevated surface is 3.7:1 — below AA. gray-400 is the floor. */
+  --color-ink: #d1d5db;
+  --color-ink-soft: #9ca3af;
+  --color-ink-faint: #6b7280;
+
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-barlow), system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+
+  --shadow-card: 0 4px 40px -12px rgba(0, 0, 0, 0.7);
+  --shadow-glow-green: 0 0 30px -5px rgba(25, 209, 132, 0.25);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  /* A single mesh, anchored off-centre. One atmospheric layer, not a gradient parade. */
+  background-image:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(25, 209, 132, 0.08), transparent 60%),
+    radial-gradient(40rem 30rem at 95% 0%, rgba(255, 29, 206, 0.05), transparent 65%);
+  background-attachment: fixed;
+}
+
+/* Grain, so the black has a surface instead of being a void. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.rule-line {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(25, 209, 132, 0.35),
+    var(--color-hairline) 30%,
+    transparent
+  );
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.pulse-dot {
+  animation: pulse-soft 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-canvas),
+    0 0 0 4px rgba(25, 209, 132, 0.5);
+  border-radius: 0.375rem;
+}
