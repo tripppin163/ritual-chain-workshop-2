@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { isAddress, type Address } from "viem";
 import { activeChain, localChain } from "@/lib/chain";
 import { COMPARATOR, COMPARATOR_LABEL, DEMO_MARKET, type ComparatorKey } from "@/lib/presets";
+import { Select } from "./Select";
 
 /** Mirrors the contract's own limits, so a bad market is refused before it costs gas. */
 const MIN_BETTING_SECONDS = 30;
@@ -19,6 +21,7 @@ type Props = {
     comparator: number;
     bettingSeconds: bigint;
     resolveDelaySeconds: bigint;
+    viewers: readonly Address[];
   }) => Promise<void>;
 };
 
@@ -26,6 +29,8 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
   const [form, setForm] = useState({ ...DEMO_MARKET });
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const [restricted, setRestricted] = useState(false);
+  const [guests, setGuests] = useState("");
 
   const set = (key: keyof typeof form) => (value: string) =>
     setForm((previous) => ({ ...previous, [key]: value }));
@@ -56,6 +61,17 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
       return setError("A market cannot run longer than a day.");
     }
 
+    // Anything separated by a comma, a space or a newline, so a pasted list works.
+    const viewers = guests
+      .split(/[\s,]+/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+    if (restricted) {
+      const bad = viewers.find((entry) => !isAddress(entry));
+      if (bad) return setError(`Not a wallet address: ${bad}`);
+      if (viewers.length === 0) return setError("Invite at least one wallet, or make it public.");
+    }
+
     setBusy(true);
     try {
       await onCreate({
@@ -66,6 +82,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
         comparator: COMPARATOR[form.comparator],
         bettingSeconds: BigInt(betting),
         resolveDelaySeconds: BigInt(delay),
+        viewers: restricted ? (viewers as Address[]) : [],
       });
     } catch (submitError) {
       setError((submitError as Error).message);
@@ -108,17 +125,16 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
           />
         </Field>
         <Field label="Test">
-          <select
+          <Select
+            label="Comparison"
             value={form.comparator}
-            onChange={(event) => set("comparator")(event.target.value as ComparatorKey)}
-            className="field w-auto px-2"
-          >
-            {(Object.keys(COMPARATOR) as ComparatorKey[]).map((key) => (
-              <option key={key} value={key}>
-                {COMPARATOR_LABEL[COMPARATOR[key]]}
-              </option>
-            ))}
-          </select>
+            onChange={(next) => set("comparator")(next)}
+            options={(Object.keys(COMPARATOR) as ComparatorKey[]).map((key) => ({
+              value: key,
+              label: COMPARATOR_LABEL[COMPARATOR[key]] ?? key,
+            }))}
+            className="w-20"
+          />
         </Field>
         <Field label="Target">
           <input
@@ -147,6 +163,40 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             className="field tabular w-full"
           />
         </Field>
+      </div>
+
+      <div className="rounded-xl border border-hairline p-3">
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={restricted}
+            onChange={(event) => setRestricted(event.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-accent)]"
+          />
+          <span>
+            <span className="block text-[14px] text-ink">Invite only</span>
+            <span className="block text-[13px] text-ink-faint">
+              Keeps it off the public board and refuses stakes from anyone else.
+            </span>
+          </span>
+        </label>
+
+        {restricted && (
+          <div className="mt-3">
+            <textarea
+              value={guests}
+              onChange={(event) => setGuests(event.target.value)}
+              rows={2}
+              placeholder="0xabc… 0xdef…"
+              className="field tabular w-full resize-none text-[13px]"
+              aria-label="Invited wallet addresses"
+            />
+            <p className="mt-2 text-[13px] text-warning">
+              Access control, not privacy: the question and every bet stay readable
+              on-chain by anyone.
+            </p>
+          </div>
+        )}
       </div>
 
       {error && (

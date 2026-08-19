@@ -85,6 +85,7 @@ function marketParams(overrides: Record<string, unknown> = {}) {
     comparator: COMPARATOR.gte,
     bettingSeconds: 60n,
     resolveDelaySeconds: 30n,
+    viewers: [] as readonly `0x${string}`[],
     ...overrides,
   } as const;
 }
@@ -235,6 +236,42 @@ describe("RitualPredict end to end", () => {
     assert.equal(markets[1]!.totalYes, parseEther("1"));
     assert.notEqual(markets[0]!.scheduleId, markets[1]!.scheduleId);
     assert.ok(markets[0]!.resolveBlock > markets[0]!.closeBlock);
+  });
+
+  it("keeps a private market off limits to anyone who was not invited", async () => {
+    const stack = await networkHelpers.loadFixture(deployRitualStack);
+    const { predict, http, alice, bob } = stack;
+
+    await predict.write.createMarket([
+      marketParams({
+        question: "Settling this between us?",
+        viewers: [alice.account.address],
+      }),
+    ]);
+    const marketId = await predict.read.marketCount();
+
+    assert.equal((await predict.read.getMarket([marketId])).isPrivate, true);
+    assert.equal(await predict.read.privateMarketCount(), 1n);
+    assert.equal(await predict.read.canBet([marketId, alice.account.address]), true);
+    assert.equal(await predict.read.canBet([marketId, bob.account.address]), false);
+
+    await predict.write.bet([marketId, true], {
+      account: alice.account,
+      value: parseEther("1"),
+    });
+    await viem.assertions.revertWithCustomError(
+      predict.write.bet([marketId, false], {
+        account: bob.account,
+        value: parseEther("1"),
+      }),
+      predict,
+      "NotInvited",
+    );
+
+    // Restricted, but not special: it settles through the same path as any other market.
+    await http.write.queueJson(['{"price":4231}']);
+    await fireScheduledResolution(stack, marketId, 0n);
+    assert.equal((await predict.read.getMarket([marketId])).state, STATE.resolved);
   });
 
   it("books the Scheduler for three attempts paid from the contract's own balance", async () => {

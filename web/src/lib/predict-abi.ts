@@ -40,6 +40,11 @@ export const predictAbi = [
   },
   {
     "inputs": [],
+    "name": "NotInvited",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NotResolved",
     "type": "error"
   },
@@ -184,6 +189,25 @@ export const predictAbi = [
       }
     ],
     "name": "MarketResolved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "viewers",
+        "type": "address[]"
+      }
+    ],
+    "name": "MarketRestricted",
     "type": "event"
   },
   {
@@ -490,6 +514,30 @@ export const predictAbi = [
         "internalType": "uint256",
         "name": "marketId",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "canBet",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
       }
     ],
     "name": "claimRefund",
@@ -548,6 +596,11 @@ export const predictAbi = [
             "internalType": "uint256",
             "name": "resolveDelaySeconds",
             "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "viewers",
+            "type": "address[]"
           }
         ],
         "internalType": "struct RitualPredict.NewMarket",
@@ -717,6 +770,11 @@ export const predictAbi = [
             "internalType": "string",
             "name": "invalidReason",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isPrivate",
+            "type": "bool"
           }
         ],
         "internalType": "struct RitualPredict.Market",
@@ -817,6 +875,11 @@ export const predictAbi = [
             "internalType": "string",
             "name": "invalidReason",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isPrivate",
+            "type": "bool"
           }
         ],
         "internalType": "struct RitualPredict.Market[]",
@@ -880,6 +943,19 @@ export const predictAbi = [
     "name": "onScheduledResolve",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "privateMarketCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

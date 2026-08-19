@@ -31,10 +31,20 @@ export function MarketTile({
   return (
     <Link
       href={`/market/${market.id.toString()}` as Route}
-      className="card group flex h-full flex-col p-5 transition-colors hover:border-line"
+      className="card rise group flex h-full flex-col p-5 transition-colors hover:border-line"
     >
       <div className="flex items-start justify-between gap-3">
-        <Status market={market} />
+        <span className="flex items-center gap-2">
+          <Status market={market} />
+          {market.isPrivate && (
+            <span
+              title="Invite only"
+              className="rounded-full bg-surface px-2 py-0.5 text-[12px] text-ink-faint"
+            >
+              Invite only
+            </span>
+          )}
+        </span>
         {position && position.claimable > 0n && (
           <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[12px] font-medium text-accent">
             {ritual(position.claimable)} to claim

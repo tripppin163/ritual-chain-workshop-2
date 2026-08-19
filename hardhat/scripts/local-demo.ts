@@ -88,6 +88,7 @@ await predict.write.createMarket([
     comparator: COMPARATOR.gte,
     bettingSeconds: 60n,
     resolveDelaySeconds: 30n,
+    viewers: [],
   },
 ]);
 const marketId = await predict.read.marketCount();
@@ -163,6 +164,7 @@ if (process.env.SKIP_FAILURE_DEMO !== "1") {
       comparator: COMPARATOR.gte,
       bettingSeconds: 30n,
       resolveDelaySeconds: 15n,
+      viewers: [],
     },
   ]);
   const deadId = await predict.read.marketCount();

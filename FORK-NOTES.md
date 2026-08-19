@@ -30,17 +30,18 @@ So: implement the five, then build everything the README promises.
 |---|---|
 | `hardhat/contracts/RitualPredict.sol` | the five functions implemented |
 | `hardhat/contracts/mocks/RitualMocks.sol` | Scheduler, RitualWallet, TEE registry, HTTP and jq precompiles as test doubles |
-| `hardhat/contracts/RitualPredict.t.sol` | 65 Solidity tests, including two fuzz properties |
-| `hardhat/test/RitualPredict.e2e.ts` | 4 end-to-end walkthroughs |
+| `hardhat/contracts/RitualPredict.t.sol` | 71 Solidity tests, including two fuzz properties |
+| `hardhat/test/RitualPredict.e2e.ts` | 5 end-to-end walkthroughs |
 | `hardhat/scripts/local-stack.ts` | installs the Ritual system contracts on a plain EVM node |
 | `hardhat/scripts/local-demo.ts` | the whole lifecycle, narrated, offline |
 | `hardhat/scripts/local-serve.ts` | sets up a local chain for the frontend |
 | `hardhat/scripts/local-executor.ts` | plays Scheduler + TEE executor locally |
 | `web/` | the market UI, the market detail screen and the demo oracle |
+| `RUNBOOK.txt` | running it, seeding test data, and clearing it again |
 
 ```
 $ npx hardhat test
-69 passing (65 solidity, 4 nodejs)
+76 passing (71 solidity, 5 nodejs)
 
 $ npx tsc --noEmit
 (clean)
@@ -183,6 +184,21 @@ Three screens, split so the one people act on stays about acting:
   goes quiet, and the questions that kept coming up. Everything explanatory lives here
   rather than as paragraphs wrapped around the controls.
 
+**Invite-only markets** are the one feature added beyond the workshop's contract. A
+market can name the wallets allowed to bet on it; everyone else is refused on-chain and
+never sees it on the board. The count of them is public even to people who cannot see
+them, so the activity is visible without the contents being. It is access control, not
+confidentiality — the question, the rule and every bet stay readable on-chain by anyone
+with an RPC endpoint, and the contract says so where it enforces it. Six Solidity tests
+and one end-to-end test cover it.
+
+Both dropdowns are built rather than native: a `<select>`'s open list is drawn by the
+operating system, so on a black page it arrives as a white slab with a blue highlight.
+The replacement keeps the keyboard behaviour of the original — arrows move, Enter picks,
+Escape closes, Home and End jump, focus returns to the trigger.
+
+`RUNBOOK.txt` covers running it, seeding test data, and clearing it again.
+
 A molten field sits behind the page (React Bits' MoltenMetal, MIT), masked so it is
 strongest behind the header and dimmed to a quarter on the prose page. It stops moving
 for anyone who asked for reduced motion.
@@ -200,6 +216,10 @@ check; one line carries the same information, because NO is its complement.
 | Markets | One market |
 |---|---|
 | ![Markets](docs/ui-markets.png) | ![Market detail](docs/ui-market-detail.png) |
+
+| New market | How it works |
+|---|---|
+| ![New market](docs/ui-new-market.png) | ![How it works](docs/ui-how-it-works.png) |
 
 Positions are read only for the tiles actually on screen. One `stakesOf` per market per
 refresh is a hundred calls every four seconds on a contract with a hundred markets.

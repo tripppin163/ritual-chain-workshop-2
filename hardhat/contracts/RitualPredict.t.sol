@@ -78,7 +78,8 @@ contract RitualPredictTest is Test {
                 target: 4000,
                 comparator: RitualPredict.Comparator.GTE,
                 bettingSeconds: BETTING_SECONDS,
-                resolveDelaySeconds: RESOLVE_DELAY_SECONDS
+                resolveDelaySeconds: RESOLVE_DELAY_SECONDS,
+                viewers: new address[](0)
             });
     }
 
@@ -304,6 +305,78 @@ contract RitualPredictTest is Test {
         vm.prank(alice);
         vm.expectRevert(RitualPredict.BettingClosed.selector);
         predict.bet{value: 1 ether}(id, true);
+    }
+
+    // ───────────────────────── private markets ────────────────────────────
+
+    function _privateMarket(address guest) private returns (uint256) {
+        RitualPredict.NewMarket memory p = _params();
+        address[] memory viewers = new address[](1);
+        viewers[0] = guest;
+        p.viewers = viewers;
+        return predict.createMarket(p);
+    }
+
+    function test_APublicMarketIsOpenToEveryone() public {
+        uint256 id = _create();
+        assertFalse(predict.getMarket(id).isPrivate);
+        assertTrue(predict.canBet(id, alice));
+        assertTrue(predict.canBet(id, carol));
+        assertEq(predict.privateMarketCount(), 0);
+    }
+
+    function test_APrivateMarketInvitesItsCreatorAndItsGuests() public {
+        uint256 id = _privateMarket(alice);
+
+        assertTrue(predict.getMarket(id).isPrivate);
+        assertTrue(predict.canBet(id, address(this)), "the creator is always invited");
+        assertTrue(predict.canBet(id, alice));
+        assertFalse(predict.canBet(id, carol));
+        assertEq(predict.privateMarketCount(), 1);
+    }
+
+    function test_APrivateMarketRefusesAnUninvitedStake() public {
+        uint256 id = _privateMarket(alice);
+
+        _bet(alice, id, true, 1 ether);
+        assertEq(predict.getMarket(id).totalYes, 1 ether);
+
+        vm.prank(carol);
+        vm.expectRevert(RitualPredict.NotInvited.selector);
+        predict.bet{value: 1 ether}(id, false);
+    }
+
+    function test_TheInvitedListIsEmittedAtCreation() public {
+        address[] memory viewers = new address[](2);
+        viewers[0] = alice;
+        viewers[1] = bob;
+        RitualPredict.NewMarket memory p = _params();
+        p.viewers = viewers;
+
+        vm.expectEmit(true, false, false, true);
+        emit RitualPredict.MarketRestricted(1, viewers);
+        predict.createMarket(p);
+    }
+
+    function test_PrivateMarketsAreCounted() public {
+        _create();
+        _privateMarket(alice);
+        _privateMarket(bob);
+        assertEq(predict.privateMarketCount(), 2);
+        assertEq(predict.marketCount(), 3);
+    }
+
+    /// A private market settles through exactly the same path as a public one.
+    function test_APrivateMarketStillSettlesItself() public {
+        uint256 id = _privateMarket(alice);
+        _bet(alice, id, true, 1 ether);
+        http.queueJson('{"price":4200}');
+
+        _fire(id, 0);
+
+        RitualPredict.Market memory m = predict.getMarket(id);
+        assertEq(uint8(m.state), uint8(RitualPredict.MarketState.Resolved));
+        assertEq(uint8(m.outcome), uint8(RitualPredict.Outcome.Yes));
     }
 
     // ──────────────────────────────── views ────────────────────────────────

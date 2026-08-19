@@ -64,6 +64,9 @@ contract RitualPredict {
         uint8 attempts;
         uint256 observedValue;
         string invalidReason;
+        /// Betting is restricted to an invited set. NOT confidentiality: every field of
+        /// this struct is readable by anyone with an RPC endpoint. See `canBet`.
+        bool isPrivate;
     }
 
     /// Arguments to `createMarket`, grouped so the whole rule reads as one unit at the
@@ -76,6 +79,9 @@ contract RitualPredict {
         Comparator comparator;
         uint256 bettingSeconds;
         uint256 resolveDelaySeconds;
+        /// Empty for a market anyone can bet on. Non-empty invites exactly these
+        /// addresses, plus the creator.
+        address[] viewers;
     }
 
     // ────────────────────────────── Constants ────────────────────────────
@@ -115,6 +121,13 @@ contract RitualPredict {
     uint256 public marketCount;
     mapping(uint256 => Market) private _markets;
 
+    /// Who may bet on a private market. Always true for a public one — see `canBet`.
+    mapping(uint256 => mapping(address => bool)) private _invited;
+
+    /// Kept as a counter rather than a list: the point is to show that private activity
+    /// exists, not to enumerate it.
+    uint256 public privateMarketCount;
+
     mapping(uint256 => mapping(address => uint256)) public yesStake;
     mapping(uint256 => mapping(address => uint256)) public noStake;
     mapping(uint256 => mapping(address => bool)) public settled;
@@ -138,6 +151,9 @@ contract RitualPredict {
         uint256 target,
         Comparator comparator
     );
+    /// Emitted once per private market. The invited addresses are in the log because
+    /// they are on-chain data either way; this makes them easy to read back.
+    event MarketRestricted(uint256 indexed marketId, address[] viewers);
     event BetPlaced(
         uint256 indexed marketId,
         address indexed bettor,
@@ -184,6 +200,7 @@ contract RitualPredict {
     error BadDuration();
     error EmptyString();
     error TransferFailed();
+    error NotInvited();
 
     constructor(uint256 blockTimeMs_) {
         if (blockTimeMs_ == 0) revert BadDuration();
@@ -239,6 +256,16 @@ contract RitualPredict {
         m.resolveBlock = resolveBlock;
         m.state = MarketState.Open;
 
+        if (p.viewers.length > 0) {
+            m.isPrivate = true;
+            privateMarketCount++;
+            _invited[marketId][msg.sender] = true;
+            for (uint256 i = 0; i < p.viewers.length; i++) {
+                _invited[marketId][p.viewers[i]] = true;
+            }
+            emit MarketRestricted(marketId, p.viewers);
+        }
+
         // Booked in the same transaction that creates the market. If the
         // Scheduler rejects the booking the whole creation reverts, because a
         // market nobody can resolve is worse than no market at all.
@@ -267,6 +294,7 @@ contract RitualPredict {
         if (msg.value == 0) revert ZeroStake();
         if (m.state != MarketState.Open || block.number >= m.closeBlock)
             revert BettingClosed();
+        if (m.isPrivate && !_invited[marketId][msg.sender]) revert NotInvited();
 
         if (isYes) {
             yesStake[marketId][msg.sender] += msg.value;
@@ -431,6 +459,21 @@ contract RitualPredict {
         for (uint256 i = 0; i < total; i++) {
             all[i] = getMarket(total - i);
         }
+    }
+
+    /**
+     * Whether `account` may bet on this market.
+     *
+     * A private market hides from the board and refuses uninvited stakes. It does not
+     * hide anything: the question, the rule and every bet are public on-chain data, and
+     * a frontend choosing not to display them changes nothing about that.
+     */
+    function canBet(
+        uint256 marketId,
+        address account
+    ) public view returns (bool) {
+        Market storage m = _market(marketId);
+        return !m.isPrivate || _invited[marketId][account];
     }
 
     function stakesOf(

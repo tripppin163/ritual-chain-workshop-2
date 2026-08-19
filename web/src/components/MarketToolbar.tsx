@@ -1,6 +1,7 @@
 "use client";
 
 import type { Market } from "@/lib/market";
+import { Select } from "./Select";
 
 export const FILTERS = [
   { key: "all", label: "All", match: () => true },
@@ -80,21 +81,13 @@ export function MarketToolbar({
           className="field w-full py-1.5 text-[13px] sm:w-44"
         />
 
-        <label className="sr-only" htmlFor="market-sort">
-          Sort markets
-        </label>
-        <select
-          id="market-sort"
+        <Select
+          label="Sort markets"
           value={sort}
-          onChange={(event) => onSort(event.target.value as SortKey)}
-          className="field w-auto shrink-0 py-1.5 text-[13px]"
-        >
-          {SORTS.map((option) => (
-            <option key={option.key} value={option.key}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          onChange={onSort}
+          options={SORTS.map((option) => ({ value: option.key, label: option.label }))}
+          className="w-44 shrink-0"
+        />
 
         <button
           type="button"

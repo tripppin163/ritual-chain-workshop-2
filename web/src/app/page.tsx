@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { predictAbi } from "@/lib/predict-abi";
 import { HAS_ADDRESS, PREDICT_ADDRESS, RPC_URL, activeChain, publicClient } from "@/lib/chain";
-import { ritual, shortAddress, type Market } from "@/lib/market";
+import { canSee, useInvites } from "@/lib/invites";
+import { shortAddress, type Market } from "@/lib/market";
 import { useOracle } from "@/lib/oracle";
 import { useTransactions, writeContract } from "@/lib/tx";
 import { readStakes, type Stakes } from "@/components/MarketCard";
@@ -26,6 +27,7 @@ type ChainState = {
   blockTimeMs: bigint;
   executionBalance: bigint;
   markets: readonly Market[];
+  privateCount: bigint;
 };
 
 /** How many tiles render before "Show more". Keeps a hundred markets off the first paint. */
@@ -43,18 +45,26 @@ export default function Page() {
   const [creating, setCreating] = useState(false);
 
   const oracle = useOracle();
+  const invites = useInvites();
   const { toast, dismiss, send, account } = useTransactions(() => refresh());
 
   const refresh = useCallback(async () => {
     if (!HAS_ADDRESS) return;
     try {
-      const [block, blockTimeMs, executionBalance, markets] = await Promise.all([
+      const [block, blockTimeMs, executionBalance, markets, privateCount] = await Promise.all([
         publicClient.getBlockNumber(),
         publicClient.readContract({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "blockTimeMs" }),
         publicClient.readContract({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "executionBalance" }),
         publicClient.readContract({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "getMarkets" }),
+        publicClient.readContract({ address: PREDICT_ADDRESS, abi: predictAbi, functionName: "privateMarketCount" }),
       ]);
-      setChain({ block, blockTimeMs, executionBalance, markets: markets as readonly Market[] });
+      setChain({
+        block,
+        blockTimeMs,
+        executionBalance,
+        markets: markets as readonly Market[],
+        privateCount,
+      });
       setError(undefined);
     } catch (refreshError) {
       setError((refreshError as Error).message);
@@ -67,17 +77,22 @@ export default function Page() {
     return () => clearInterval(timer);
   }, [refresh]);
 
+  // Invite-only markets never reach the board unless this wallet was invited to them.
+  const readable = useMemo(
+    () => (chain ? chain.markets.filter((market) => canSee(market, account, invites)) : []),
+    [chain, account, invites],
+  );
+
   const filtered = useMemo(() => {
-    if (!chain) return [];
     const match = FILTERS.find((option) => option.key === filter)?.match ?? (() => true);
     const needle = query.trim().toLowerCase();
     return sortMarkets(
-      chain.markets.filter(
+      readable.filter(
         (market) => match(market) && (!needle || market.question.toLowerCase().includes(needle)),
       ),
       sort,
     );
-  }, [chain, filter, query, sort]);
+  }, [readable, filter, query, sort]);
 
   const visible = useMemo(() => filtered.slice(0, limit), [filtered, limit]);
 
@@ -129,6 +144,16 @@ export default function Page() {
           <Stat label="Contract">
             {HAS_ADDRESS ? shortAddress(PREDICT_ADDRESS) : "not configured"}
           </Stat>
+          <Stat label="Invite only">
+            {chain ? (
+              <span className="inline-flex items-baseline gap-1.5">
+                {chain.privateCount.toString()}
+                <span className="text-[13px] text-ink-faint">settled privately</span>
+              </span>
+            ) : (
+              "—"
+            )}
+          </Stat>
           <Stat label="Oracle now">
             {oracle.ok && oracle.reading?.price !== undefined ? (
               <span className="inline-flex items-center gap-2">
@@ -148,7 +173,7 @@ export default function Page() {
       <section id="markets">
         {chain && (
           <MarketToolbar
-            markets={chain.markets}
+            markets={readable}
             filter={filter}
             onFilter={setFilter}
             query={query}
@@ -169,7 +194,7 @@ export default function Page() {
 
         {chain && filtered.length === 0 && (
           <p className="card px-5 py-16 text-center text-sm text-ink-faint">
-            {chain.markets.length === 0
+            {readable.length === 0
               ? "No markets yet. Create the first one."
               : "Nothing matches that filter."}
           </p>

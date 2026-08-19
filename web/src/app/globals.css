@@ -156,3 +156,98 @@ body {
     inset 0 -1px 0 rgba(255, 255, 255, 0.02),
     0 10px 30px -20px rgba(0, 0, 0, 0.95);
 }
+
+/* ── Dialog ─────────────────────────────────────────────────────────────────
+ * Tailwind's reset zeroes every margin, which also removes the `margin: auto`
+ * a native dialog relies on to centre itself — that is why it was landing in a
+ * corner. Restoring it here keeps the browser's own centring rather than
+ * reimplementing it with transforms.
+ */
+dialog {
+  margin: auto;
+}
+
+dialog::backdrop {
+  animation: fade-in 0.18s ease-out;
+}
+
+dialog[open] {
+  animation: dialog-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────────
+ * The default one is a bright system slab on a black page. This is the same
+ * bar, in the palette, and it keeps its width so nothing reflows on hover.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2f2f35 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #2f2f35;
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #46464e;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────────
+ * Enough to make the page feel unhurried, not enough to make anyone wait: one
+ * short rise as content lands, and smooth anchor scrolling.
+ */
+html {
+  scroll-behavior: smooth;
+}
+
+.rise {
+  animation: rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rise,
+  dialog[open],
+  dialog::backdrop {
+    animation: none;
+  }
+}

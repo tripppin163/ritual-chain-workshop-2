@@ -3,6 +3,7 @@
  *
  *   npx hardhat node                                 # terminal 1
  *   npx hardhat run scripts/local-serve.ts           # terminal 2, once
+ *   SEED=0 npx hardhat run scripts/local-serve.ts    # ...or with an empty board
  *   npx hardhat run scripts/local-executor.ts        # terminal 2, keep running
  *   cd ../web && npm run dev                         # terminal 3
  *
@@ -36,6 +37,15 @@ await installRitualMocks(connection);
 const predict = await viem.deployContract("RitualPredict", [BLOCK_TIME_MS]);
 await predict.write.fundExecution([500_000n], { value: parseEther("1") });
 
+/*
+ * Every run deploys a fresh contract, so the board starts empty and the previous run's
+ * markets are simply no longer the ones being read. That is the same move that clears a
+ * board on a real chain: nothing on-chain is ever deleted, a new instance is deployed
+ * and the frontend is pointed at it. SEED=0 skips the demo markets entirely.
+ */
+const seed = process.env.SEED !== "0";
+
+if (seed) {
 await predict.write.createMarket([
   {
     question: "Will ETH/USD be at least $4,000 when this market resolves?",
@@ -45,6 +55,7 @@ await predict.write.createMarket([
     comparator: COMPARATOR.gte,
     bettingSeconds: BETTING_SECONDS,
     resolveDelaySeconds: RESOLVE_DELAY_SECONDS,
+    viewers: [],
   },
 ]);
 
@@ -60,6 +71,7 @@ if (process.env.DEMO_SHORT_MARKET !== "0") {
       comparator: COMPARATOR.lt,
       bettingSeconds: 60n,
       resolveDelaySeconds: 30n,
+      viewers: [],
     },
   ]);
 }
@@ -72,6 +84,8 @@ if (process.env.DEMO_BETS !== "0" && alice && bob) {
     await predict.write.bet([id, true], { account: alice.account, value: parseEther("2") });
     await predict.write.bet([id, false], { account: bob.account, value: parseEther("3") });
   }
+}
+
 }
 
 // One block per second, so blockTimeMs above is the truth and the UI's countdowns are

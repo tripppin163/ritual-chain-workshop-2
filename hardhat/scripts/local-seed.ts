@@ -50,6 +50,7 @@ for (let index = 0; index < COUNT; index++) {
       comparator: COMPARATOR[comparator],
       bettingSeconds,
       resolveDelaySeconds: 30n,
+      viewers: [],
     },
   ]);
 

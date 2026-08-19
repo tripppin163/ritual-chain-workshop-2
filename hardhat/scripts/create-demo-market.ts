@@ -39,6 +39,8 @@ const params = {
   comparator,
   bettingSeconds: BigInt(process.env.BETTING_SECONDS ?? DEMO_MARKET.bettingSeconds),
   resolveDelaySeconds: BigInt(process.env.RESOLVE_DELAY_SECONDS ?? DEMO_MARKET.resolveDelaySeconds),
+  // Invite addresses here to create a market only they can bet on.
+  viewers: [] as readonly `0x${string}`[],
 } as const;
 
 const { connection, publicClient, viem } = await connectRitual();

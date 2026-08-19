@@ -1,0 +1,153 @@
+RITUAL PREDICT — RUNBOOK
+========================
+
+Plain-text operating notes: how to run it, how to fill it with test data, and how to
+get rid of that test data again.
+
+Full write-up of what this fork adds is in FORK-NOTES.md.
+
+
+1. WHAT YOU NEED
+----------------
+
+  Node.js 20+
+  npm
+
+  cd hardhat && npm install
+  cd web     && npm install
+
+The Ritual testnet is not required. Everything below runs against a local node.
+
+
+2. RUN IT LOCALLY
+-----------------
+
+Four terminals.
+
+  [1]  cd hardhat
+       npx hardhat node
+
+  [2]  cd hardhat
+       npx hardhat run scripts/local-serve.ts
+
+       Installs the Ritual system contracts at their canonical addresses, deploys
+       RitualPredict, prepays its execution fees, opens two demo markets, sets the node
+       to one block per second, and writes web/.env.local for you.
+       It prints the contract address. Copy it for the next step.
+
+  [3]  cd hardhat
+       PREDICT_ADDRESS=0x... npx hardhat run scripts/local-executor.ts
+
+       Plays the two roles a plain node does not have: the Scheduler and the TEE
+       executor. Leave it running. It fetches each market's oracle URL over real HTTP
+       and drives the scheduled resolution.
+
+  [4]  cd web
+       npm run dev
+
+       Open http://localhost:3000
+
+
+3. TEST DATA
+------------
+
+Fill the board:
+
+  cd hardhat
+  PREDICT_ADDRESS=0x... COUNT=16 npx hardhat run scripts/local-seed.ts
+
+Creates a spread of markets with different windows, targets and stakes, so the grid,
+the filters, the search and the "Show more" button all have something to work on.
+COUNT defaults to 16.
+
+
+4. DELETING TEST DATA
+---------------------
+
+Short version:
+
+  cd hardhat
+  SEED=0 npx hardhat run scripts/local-serve.ts
+
+That deploys a fresh contract and repoints web/.env.local at it, so the board is empty
+on the next page load. The demo markets are skipped.
+
+Why it works that way, and why there is no "delete" button:
+
+  Nothing on a blockchain is deletable. A market that was created is in the block
+  history permanently, and no function can remove it — not on Ritual Chain, and not on
+  the local node either.
+
+  What "clearing the board" actually means, everywhere, is: deploy a fresh instance of
+  the contract and point the frontend at the new address. The old markets still exist;
+  they are simply no longer the ones being read. That is exactly what the command above
+  does, which is why the same procedure works locally and in production.
+
+For a genuinely empty chain locally, restart terminal [1]. The node keeps its state in
+memory, so stopping it throws away every block, every contract and every market.
+
+After a real deployment:
+
+  cd hardhat
+  npx hardhat run scripts/deploy.ts
+
+  Prints a new address. Put it in web/.env.local as NEXT_PUBLIC_PREDICT_ADDRESS and
+  restart the web server. The previous deployment and its markets stay on-chain and
+  stay readable by anyone who knows the old address — deploying a new one hides
+  nothing, it only changes what your frontend shows.
+
+
+5. INVITE-ONLY MARKETS
+----------------------
+
+Tick "Invite only" in the create dialog and paste wallet addresses, separated by spaces,
+commas or newlines. The creator is always invited.
+
+What it does:
+
+  - the market is refused to anyone else who tries to bet (NotInvited)
+  - it is hidden from the public board; only the creator and the invited wallets see it
+  - it is counted in the "Invite only" figure on the markets screen, so the activity is
+    visible even to people who cannot see the markets themselves
+
+What it does NOT do:
+
+  - it is not confidentiality. The question, the oracle URL, the target and every single
+    bet are public on-chain data. Anyone with an RPC endpoint can read all of it. The
+    frontend choosing not to display a market changes nothing about that.
+
+Use it for a private bet between friends that you would rather not put on the public
+board. Do not use it for anything that must actually stay secret.
+
+
+6. VERIFYING A CHANGE
+---------------------
+
+  cd hardhat
+  npx hardhat test        # 76 tests: 71 Solidity, 5 end-to-end
+  npx tsc --noEmit
+
+  cd web
+  npx tsc --noEmit
+  npm run build
+
+The contract tests need no network and no funded account: mock runtime code is placed
+at Ritual's canonical addresses with vm.etch, and the whole lifecycle runs locally.
+
+
+7. DEPLOYING TO RITUAL CHAIN
+----------------------------
+
+  cd hardhat
+  cp .env.example .env          # set RITUAL_PRIVATE_KEY, funded from the faucet
+  npx hardhat run scripts/block-time.ts    # measure the chain's current block time
+  npx hardhat run scripts/deploy.ts
+
+The demo oracle must be reachable from the public internet, because a TEE executor in
+the cloud is what fetches it — not your browser:
+
+  cd web && npm run dev
+  cloudflared tunnel --url http://localhost:3000
+
+Then put the tunnel URL into web/.env.local as NEXT_PUBLIC_DEMO_ORACLE_URL, and use it
+as the oracle URL when creating markets.

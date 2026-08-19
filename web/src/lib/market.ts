@@ -20,6 +20,7 @@ export type Market = {
   attempts: number;
   observedValue: bigint;
   invalidReason: string;
+  isPrivate: boolean;
 };
 
 export const isOpen = (m: Market) => m.state === 0;
