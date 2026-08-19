@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { OraclePreview } from "@/components/OraclePreview";
 
 export const metadata: Metadata = {
   title: "How it works — Ritual Predict",
@@ -91,6 +92,8 @@ export default function HowItWorksPage() {
           Add <Code>?price=4500</Code> to force a value, which is what makes a live demo
           watchable.
         </p>
+
+        <OraclePreview />
         <p>
           On Ritual Chain the URL is fetched by an executor in the cloud, so it has to be
           publicly reachable. Against a local node the executor is a script on the same

@@ -171,9 +171,11 @@ for a settled market its outcome.
 
 Three screens, split so the one people act on stays about acting:
 
-- **Markets** — every market with its pool, its resolution rule, the Scheduler booking
-  and a live countdown; a create form validated against the contract's own limits; and
-  the demo oracle showing what an executor would read right now.
+- **Markets** — a grid of tiles, each carrying a state, a question, the implied price and
+  the one line of timing that matters right now. Filter by state with live counts, search
+  the wording, sort by newest, resolving soonest or largest pool, and page through with
+  "Show more". Creating a market is a dialog behind one button rather than a form holding
+  a third of the screen permanently, because creating is rare and reading is constant.
 - **One market** — the implied YES price after every bet, where the market sits in the
   run it booked for itself, and its whole history read from the contract's logs. There
   is no indexer and no backend behind any of it.
@@ -198,6 +200,9 @@ check; one line carries the same information, because NO is its complement.
 | Markets | One market |
 |---|---|
 | ![Markets](docs/ui-markets.png) | ![Market detail](docs/ui-market-detail.png) |
+
+Positions are read only for the tiles actually on screen. One `stakesOf` per market per
+refresh is a hundred calls every four seconds on a contract with a hundred markets.
 
 | How it works | Mobile |
 |---|---|

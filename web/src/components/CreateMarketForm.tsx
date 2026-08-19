@@ -81,7 +81,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
           value={form.question}
           onChange={(event) => set("question")(event.target.value)}
           rows={2}
-          className="field resize-none"
+          className="field w-full resize-none"
         />
       </Field>
 
@@ -89,7 +89,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
         <input
           value={form.oracleUrl}
           onChange={(event) => set("oracleUrl")(event.target.value)}
-          className="field text-[13px]"
+          className="field w-full text-[13px]"
         />
         {localhostOracle && (
           <p className="mt-2 text-[13px] text-warning">
@@ -104,7 +104,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
           <input
             value={form.jsonPath}
             onChange={(event) => set("jsonPath")(event.target.value)}
-            className="field tabular"
+            className="field tabular w-full"
           />
         </Field>
         <Field label="Test">
@@ -125,7 +125,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.target}
             onChange={(event) => set("target")(event.target.value)}
             inputMode="numeric"
-            className="field tabular"
+            className="field tabular w-full"
           />
         </Field>
       </div>
@@ -136,7 +136,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.bettingSeconds}
             onChange={(event) => set("bettingSeconds")(event.target.value)}
             inputMode="numeric"
-            className="field tabular"
+            className="field tabular w-full"
           />
         </Field>
         <Field label="Then resolve after" hint="seconds">
@@ -144,7 +144,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
             value={form.resolveDelaySeconds}
             onChange={(event) => set("resolveDelaySeconds")(event.target.value)}
             inputMode="numeric"
-            className="field tabular"
+            className="field tabular w-full"
           />
         </Field>
       </div>

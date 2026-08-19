@@ -18,8 +18,8 @@ export function Nav() {
 
   return (
     <header className="floating sticky top-0 z-40 border-b border-hairline bg-canvas/70 backdrop-blur-xl">
-      <nav className="mx-auto flex w-full max-w-5xl items-center gap-6 px-5 py-3 sm:px-8">
-        <Link href="/" className="text-[15px] font-semibold tracking-[-0.01em] text-ink">
+      <nav className="mx-auto flex w-full max-w-6xl items-center gap-3 px-5 py-3 sm:gap-6 sm:px-8">
+        <Link href="/" className="text-[15px] font-semibold tracking-[-0.01em] whitespace-nowrap text-ink">
           Ritual Predict
         </Link>
 
@@ -32,7 +32,7 @@ export function Nav() {
                 key={link.href}
                 href={link.href as Route}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-lg px-3 py-1.5 text-[13px] transition-colors ${
+                className={`rounded-lg px-2.5 py-1.5 text-[13px] whitespace-nowrap transition-colors sm:px-3 ${
                   active ? "bg-surface text-ink" : "text-ink-faint hover:text-ink-soft"
                 }`}
               >

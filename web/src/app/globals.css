@@ -81,8 +81,9 @@ body {
 
 /* Inputs read as cut into the card: darker than their surround, lit from inside the
  * top edge rather than along it. */
+/* No width here on purpose: it would beat the utility classes at the call site, which
+ * is how a select meant to hug its label ended up spanning half the toolbar. */
 .field {
-  width: 100%;
   background-color: #141417;
   border: 1px solid var(--color-line);
   border-radius: 10px;
