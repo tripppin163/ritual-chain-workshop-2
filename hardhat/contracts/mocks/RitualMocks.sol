@@ -365,7 +365,35 @@ contract MockScheduler {
      * Test driver: run one scheduled execution the way the chain would — from this
      * address, with the real `executionIndex` written into calldata bytes 4-35.
      */
-    function fire(uint256 callId, uint256 executionIndex) external returns (bool success) {
+    function fire(uint256 callId, uint256 executionIndex) public returns (bool success) {
+        bytes memory returndata;
+        (success, returndata) = _execute(callId, executionIndex);
+        emit Fired(callId, executionIndex, success);
+    }
+
+    /**
+     * Same, but bubbles the callback's revert instead of swallowing it.
+     *
+     * The chain swallows a failed scheduled execution, and so does `fire`. That is
+     * faithful but it makes a broken callback invisible — and it fools gas estimation,
+     * which happily reports the cost of a run whose inner call ran out of gas. Use this
+     * wherever the callback is expected to succeed.
+     */
+    function fireStrict(uint256 callId, uint256 executionIndex) external {
+        (bool success, bytes memory returndata) = _execute(callId, executionIndex);
+        emit Fired(callId, executionIndex, success);
+        if (!success) {
+            if (returndata.length == 0) revert("scheduled callback reverted silently");
+            assembly {
+                revert(add(returndata, 32), mload(returndata))
+            }
+        }
+    }
+
+    function _execute(
+        uint256 callId,
+        uint256 executionIndex
+    ) private returns (bool success, bytes memory returndata) {
         Call storage c = _calls[callId];
         require(c.target != address(0), "unknown call");
         require(c.state == CallState.Scheduled, "call is not scheduled");
@@ -377,13 +405,12 @@ contract MockScheduler {
         }
 
         c.state = CallState.Executing;
-        (success, ) = c.target.call{gas: c.gas}(data);
+        (success, returndata) = c.target.call{gas: c.gas}(data);
         c.fired++;
 
         if (c.state == CallState.Executing) {
             c.state = c.fired >= c.numCalls ? CallState.Completed : CallState.Scheduled;
         }
-        emit Fired(callId, executionIndex, success);
     }
 }
 

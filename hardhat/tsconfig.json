@@ -4,8 +4,16 @@
     "module": "node20",
     "target": "es2023",
     "skipLibCheck": true,
-    "outDir": "dist",
     "types": ["node"],
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+
+    // Every script and test imports its neighbours as "./ritual.ts", which is how
+    // Hardhat 3 runs them. Without this pair the documented `npx tsc --noEmit` check
+    // fails on the starter's own files before it ever reaches project code.
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true
   }
 }
