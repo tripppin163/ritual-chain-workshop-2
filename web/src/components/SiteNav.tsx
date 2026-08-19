@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { shortAddress } from "@/lib/market";
 import { useWallet } from "@/lib/wallet";
 import CardNav, { type CardNavItem } from "./reactbits/CardNav";
@@ -108,9 +109,13 @@ export function SiteNav() {
       ease="power3.out"
       className="[&_.card-nav]:border [&_.card-nav]:border-hairline"
       logoNode={
-        <span className="text-[15px] font-semibold tracking-[-0.01em] whitespace-nowrap text-ink">
+        <Link
+          href="/"
+          aria-label="Ritual Predict — back to the markets"
+          className="text-[19px] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink transition-opacity hover:opacity-80 sm:text-[21px]"
+        >
           Ritual Predict
-        </span>
+        </Link>
       }
       cta={
         <button

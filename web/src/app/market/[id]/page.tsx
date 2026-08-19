@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { HAS_ADDRESS, PREDICT_ADDRESS, publicClient } from "@/lib/chain";
@@ -12,6 +11,7 @@ import { MarketCard, readStakes, type Stakes } from "@/components/MarketCard";
 import { ProbabilityChart } from "@/components/ProbabilityChart";
 import { Lifecycle } from "@/components/Lifecycle";
 import { Timeline } from "@/components/Timeline";
+import { BackLink } from "@/components/Prose";
 import { MarketCardSkeleton, Skeleton } from "@/components/Skeleton";
 import { ToastBar } from "@/components/ToastBar";
 
@@ -71,12 +71,7 @@ export default function MarketPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-5 pb-24 sm:px-8">
       <nav className="pt-28 pb-8">
-        <Link
-          href="/"
-          className="text-[13px] text-ink-faint transition-colors hover:text-ink"
-        >
-          ← All markets
-        </Link>
+        <BackLink />
       </nav>
 
       {error && (

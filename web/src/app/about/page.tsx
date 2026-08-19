@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Out, PageTitle, Section, Steps } from "@/components/Prose";
+import { BackLink, Out, PageTitle, Section, Steps } from "@/components/Prose";
 
 export const metadata: Metadata = {
   title: "About — Ritual Predict",
@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 pt-28 pb-28 sm:px-8">
+      <div className="mb-8">
+        <BackLink />
+      </div>
       <PageTitle
         title="About"
         lead="This is a Proof of Building for the second Ritual Academy bootcamp, whose workshop built a prediction market that resolves itself on Ritual Chain."

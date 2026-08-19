@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Code, Out, PageTitle, Section, Table } from "@/components/Prose";
+import { BackLink, Code, Out, PageTitle, Section, Table } from "@/components/Prose";
 
 export const metadata: Metadata = {
   title: "Architecture — Ritual Predict",
@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 export default function ArchitecturePage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 pt-28 pb-28 sm:px-8">
+      <div className="mb-8">
+        <BackLink />
+      </div>
       <PageTitle
         title="Architecture"
         lead="One contract, four of Ritual's own capabilities, and no server anywhere. This is what sits underneath the screen you just came from."

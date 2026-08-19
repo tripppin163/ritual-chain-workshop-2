@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OraclePreview } from "@/components/OraclePreview";
-import { Code, Faq, PageTitle, Section, Steps, Table } from "@/components/Prose";
+import { BackLink, Code, Faq, PageTitle, Section, Steps, Table } from "@/components/Prose";
 
 export const metadata: Metadata = {
   title: "How it works — Ritual Predict",
@@ -16,14 +16,13 @@ export const metadata: Metadata = {
 export default function HowItWorksPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 pt-28 pb-28 sm:px-8">
-      <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-[40px]">
-        How it works
-      </h1>
-      <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-        A market here decides its own outcome. Nobody presses resolve, no backend cron
-        runs, and no oracle network is subscribed to. The contract books its own wake-up
-        call at creation and reads the answer itself.
-      </p>
+      <div className="mb-8">
+        <BackLink />
+      </div>
+      <PageTitle
+        title="How it works"
+        lead="A market here decides its own outcome. Nobody presses resolve, no backend cron runs, and no oracle network is subscribed to. The contract books its own wake-up call at creation and reads the answer itself."
+      />
 
       <Section title="The loop">
         <Steps

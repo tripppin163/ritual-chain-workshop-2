@@ -1,3 +1,25 @@
+import Link from "next/link";
+import type { Route } from "next";
+
+/** Every page that is not the board opens with the way off it. */
+export function BackLink({
+  href = "/",
+  label = "All markets",
+}: {
+  href?: string;
+  label?: string;
+}) {
+  return (
+    <Link
+      href={href as Route}
+      className="inline-flex items-center gap-2 text-[13px] text-ink-faint transition-colors hover:text-ink"
+    >
+      <span aria-hidden>←</span>
+      {label}
+    </Link>
+  );
+}
+
 /**
  * The pieces the explanatory pages are built from. Shared so /how-it-works,
  * /architecture and /about read as one document rather than three.
