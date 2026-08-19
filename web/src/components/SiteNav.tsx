@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { shortAddress } from "@/lib/market";
 import { useWallet } from "@/lib/wallet";
 import CardNav, { type CardNavItem } from "./reactbits/CardNav";
+import { Wordmark } from "./Wordmark";
 import { DocsIcon, PageIcon, RepoIcon, SiteIcon, SocialIcon } from "./icons";
 
 /**
@@ -107,16 +107,7 @@ export function SiteNav() {
       baseColor="#111113"
       menuColor="#a1a1aa"
       ease="power3.out"
-      className="[&_.card-nav]:border [&_.card-nav]:border-hairline"
-      logoNode={
-        <Link
-          href="/"
-          aria-label="Ritual Predict — back to the markets"
-          className="text-[19px] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink transition-opacity hover:opacity-80 sm:text-[21px]"
-        >
-          Ritual Predict
-        </Link>
-      }
+      logoNode={<Wordmark />}
       cta={
         <button
           type="button"
