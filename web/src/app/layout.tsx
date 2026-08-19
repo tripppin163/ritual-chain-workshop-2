@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Nav } from "@/components/Nav";
+import { SiteNav } from "@/components/SiteNav";
 import { SiteBackground } from "@/components/SiteBackground";
 import { WalletProvider } from "@/lib/wallet";
 import "./globals.css";
@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <SiteBackground />
         <WalletProvider>
-          <Nav />
+          <SiteNav />
           {children}
         </WalletProvider>
       </body>

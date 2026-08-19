@@ -121,7 +121,7 @@ export default function Page() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 pb-24 sm:px-8">
-      <header className="pt-10 pb-8">
+      <header className="pt-28 pb-8">
         <h1 className="text-[28px] leading-[1.1] font-semibold tracking-[-0.02em] text-ink sm:text-[34px]">
           Markets that settle themselves
         </h1>

@@ -70,7 +70,7 @@ export default function MarketPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-5 pb-24 sm:px-8">
-      <nav className="pt-10 pb-8">
+      <nav className="pt-28 pb-8">
         <Link
           href="/"
           className="text-[13px] text-ink-faint transition-colors hover:text-ink"

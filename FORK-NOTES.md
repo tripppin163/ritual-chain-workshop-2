@@ -181,8 +181,15 @@ Three screens, split so the one people act on stays about acting:
   run it booked for itself, and its whole history read from the contract's logs. There
   is no indexer and no backend behind any of it.
 - **How it works** — the loop, the precompiles involved, what happens when the oracle
-  goes quiet, and the questions that kept coming up. Everything explanatory lives here
-  rather than as paragraphs wrapped around the controls.
+  goes quiet, and the questions that kept coming up.
+- **Architecture** — the contract, what it calls and with which arguments, how the whole
+  thing runs with no chain underneath it, and what its limits are.
+- **About** — what this is, what the workshop shipped, and what the fork adds.
+
+The header is React Bits' CardNav (MIT), opening into three cards: this build's own
+pages, Ritual's site, documentation and X account, and the source — this fork, the
+workshop starter, and ritual-net. Someone who has never heard of Ritual can land on the
+board and find their way from there without any of it crowding the markets.
 
 **Invite-only markets** are the one feature added beyond the workshop's contract. A
 market can name the wallets allowed to bet on it; everyone else is refused on-chain and
@@ -220,6 +227,10 @@ check; one line carries the same information, because NO is its complement.
 | New market | How it works |
 |---|---|
 | ![New market](docs/ui-new-market.png) | ![How it works](docs/ui-how-it-works.png) |
+
+| Header, open | Architecture |
+|---|---|
+| ![Header](docs/ui-nav.png) | ![Architecture](docs/ui-architecture.png) |
 
 Positions are read only for the tiles actually on screen. One `stakesOf` per market per
 refresh is a hundred calls every four seconds on a contract with a hundred markets.
