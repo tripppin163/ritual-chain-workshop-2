@@ -146,7 +146,7 @@ export function MarketCard({
       {bettingOpen && account && (
         <div className="mt-5 border-t border-hairline pt-5">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex rounded-lg bg-surface p-1" role="group" aria-label="Pick a side">
+            <div className="recessed flex rounded-lg bg-surface p-1" role="group" aria-label="Pick a side">
               {(["yes", "no"] as const).map((option) => (
                 <button
                   key={option}
@@ -155,7 +155,7 @@ export function MarketCard({
                   aria-pressed={side === option}
                   className={`rounded-md px-4 py-1.5 text-[13px] font-medium transition-colors ${
                     side === option
-                      ? "bg-hover text-ink"
+                      ? "raised-quiet bg-hover text-ink"
                       : "text-ink-faint hover:text-ink-soft"
                   }`}
                 >
@@ -179,7 +179,7 @@ export function MarketCard({
             <button
               type="button"
               onClick={placeBet}
-              className="ml-auto rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
+              className="raised ml-auto rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
             >
               Place bet
             </button>
@@ -204,7 +204,7 @@ export function MarketCard({
         <button
           type="button"
           onClick={() => onClaim(market.id, stakes.claimable)}
-          className="mt-5 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 sm:w-auto"
+          className="raised mt-5 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 sm:w-auto"
         >
           Claim {ritual(stakes.claimable)} RITUAL
         </button>
@@ -214,7 +214,7 @@ export function MarketCard({
         <button
           type="button"
           onClick={() => onRefund(market.id, stakes.claimable)}
-          className="mt-5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-hover sm:w-auto"
+          className="raised-quiet mt-5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-hover sm:w-auto"
         >
           Refund {ritual(stakes.claimable)} RITUAL
         </button>

@@ -20,7 +20,7 @@ export function PoolBar({ market }: { market: Market }) {
         </span>
       </div>
 
-      <div className="mt-3 flex h-1.5 w-full gap-0.5 overflow-hidden rounded-full" aria-hidden>
+      <div className="recessed mt-3 flex h-1.5 w-full gap-0.5 overflow-hidden rounded-full bg-canvas" aria-hidden>
         <div
           className={`h-full rounded-full transition-all duration-500 ${
             settled && !yesWon ? "bg-accent/30" : "bg-accent"

@@ -11,7 +11,6 @@ import { MarketCard, readStakes, type Stakes } from "@/components/MarketCard";
 import { CreateMarketForm } from "@/components/CreateMarketForm";
 import { OraclePreview } from "@/components/OraclePreview";
 import { MarketCardSkeleton } from "@/components/Skeleton";
-import { Tilt } from "@/components/Tilt";
 import { ToastBar } from "@/components/ToastBar";
 
 type ChainState = {
@@ -120,8 +119,8 @@ export default function Page() {
           )}
 
           {chain?.markets.map((market) => (
-            <Tilt key={market.id.toString()}>
             <MarketCard
+              key={market.id.toString()}
               market={market}
               block={chain.block}
               blockTimeMs={chain.blockTimeMs}
@@ -143,7 +142,6 @@ export default function Page() {
                 )
               }
             />
-            </Tilt>
           ))}
         </section>
 
@@ -160,11 +158,9 @@ export default function Page() {
             />
           </section>
 
-          <Tilt>
-            <section className="card p-5 sm:p-6">
-              <OraclePreview />
-            </section>
-          </Tilt>
+          <section className="card p-5 sm:p-6">
+            <OraclePreview />
+          </section>
         </aside>
       </div>
 

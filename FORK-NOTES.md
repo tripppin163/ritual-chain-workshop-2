@@ -182,9 +182,14 @@ Three screens, split so the one people act on stays about acting:
   rather than as paragraphs wrapped around the controls.
 
 A molten field sits behind the page (React Bits' MoltenMetal, MIT), masked so it is
-strongest behind the header and dimmed to a quarter on the prose page. Cards lean a few
-degrees toward the pointer with a sheen that follows it. Both stop for anyone who asked
-for reduced motion, and the tilt never runs on a coarse pointer.
+strongest behind the header and dimmed to a quarter on the prose page. It stops moving
+for anyone who asked for reduced motion.
+
+Depth on the surfaces is static: a lit top edge, a shadow underneath, inputs cut into
+the card and buttons sitting on top of it. An earlier pass had the cards lean toward the
+pointer with a sheen that tracked it, which was the wrong instinct — a card that moves
+and lights up while it is being read competes with the reading, and reading the numbers
+is what people came for.
 
 The price chart is one series rather than a YES/NO pair on purpose. The second colour
 would have to be a grey, which reads as "no category" and fails a categorical palette

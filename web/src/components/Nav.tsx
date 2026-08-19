@@ -17,7 +17,7 @@ export function Nav() {
   const { account, error, connect } = useWallet();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/70 backdrop-blur-xl">
+    <header className="floating sticky top-0 z-40 border-b border-hairline bg-canvas/70 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-5xl items-center gap-6 px-5 py-3 sm:px-8">
         <Link href="/" className="text-[15px] font-semibold tracking-[-0.01em] text-ink">
           Ritual Predict
@@ -49,7 +49,7 @@ export function Nav() {
             className={
               account
                 ? "tabular rounded-lg border border-line bg-surface px-3 py-1.5 text-[13px] font-medium text-ink transition-colors hover:bg-hover"
-                : "rounded-lg bg-accent px-3.5 py-1.5 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
+                : "raised rounded-lg bg-accent px-3.5 py-1.5 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
             }
           >
             {account ? shortAddress(account) : "Connect wallet"}

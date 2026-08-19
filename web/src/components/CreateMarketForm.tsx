@@ -158,7 +158,7 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
       <button
         type="submit"
         disabled={disabled || busy}
-        className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-faint"
+        className="raised w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-faint disabled:shadow-none"
       >
         {busy ? "Creating…" : disabled ? "Connect a wallet to create" : "Create market"}
       </button>
