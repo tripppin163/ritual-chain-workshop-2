@@ -1,5 +1,6 @@
 "use client";
 
+import { MetallicSurface } from "./MetallicSurface";
 import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
@@ -179,9 +180,10 @@ export function MarketCard({
             <button
               type="button"
               onClick={placeBet}
-              className="raised ml-auto rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
+              className="raised relative isolate ml-auto overflow-hidden rounded-lg bg-accent px-4 py-2 text-[13px] font-semibold text-canvas transition-opacity hover:opacity-90"
             >
-              Place bet
+              <MetallicSurface />
+              <span className="relative">Place bet</span>
             </button>
           </div>
           {amountError && (
@@ -204,9 +206,10 @@ export function MarketCard({
         <button
           type="button"
           onClick={() => onClaim(market.id, stakes.claimable)}
-          className="raised mt-5 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 sm:w-auto"
+          className="raised relative isolate mt-5 w-full overflow-hidden rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 sm:w-auto"
         >
-          Claim {ritual(stakes.claimable)} RITUAL
+          <MetallicSurface />
+          <span className="relative">Claim {ritual(stakes.claimable)} RITUAL</span>
         </button>
       )}
 

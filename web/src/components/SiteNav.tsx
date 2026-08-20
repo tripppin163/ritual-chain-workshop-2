@@ -3,7 +3,7 @@
 import { shortAddress } from "@/lib/market";
 import { useWallet } from "@/lib/wallet";
 import CardNav, { type CardNavItem } from "./reactbits/CardNav";
-import { MoltenSurface } from "./MoltenSurface";
+import { MetallicSurface } from "./MetallicSurface";
 import { Wordmark } from "./Wordmark";
 import { DocsIcon, PageIcon, RepoIcon, SiteIcon, SocialIcon } from "./icons";
 
@@ -116,11 +116,13 @@ export function SiteNav() {
           className={
             account
               ? "tabular rounded-lg border border-line bg-surface px-3.5 py-2 text-[13px] font-medium whitespace-nowrap text-ink transition-colors hover:bg-hover"
-              : "raised relative isolate overflow-hidden rounded-lg bg-accent px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap text-canvas transition-opacity hover:opacity-90"
+              : "raised relative isolate overflow-hidden rounded-lg bg-accent px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
           }
         >
-          {!account && <MoltenSurface />}
-          <span className="relative">{account ? shortAddress(account) : "Connect wallet"}</span>
+          {!account && <MetallicSurface />}
+          <span className={account ? undefined : "relative text-canvas"}>
+            {account ? shortAddress(account) : "Connect wallet"}
+          </span>
         </button>
       }
     />

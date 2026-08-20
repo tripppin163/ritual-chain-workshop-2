@@ -1,7 +1,7 @@
 "use client";
 
 import type { Market } from "@/lib/market";
-import { MoltenSurface } from "./MoltenSurface";
+import { MetallicSurface } from "./MetallicSurface";
 import { Select } from "./Select";
 
 export const FILTERS = [
@@ -93,10 +93,10 @@ export function MarketToolbar({
         <button
           type="button"
           onClick={onCreate}
-          className="raised relative isolate overflow-hidden rounded-lg bg-accent px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap text-canvas transition-opacity hover:opacity-90"
+          className="raised relative isolate overflow-hidden rounded-lg bg-accent px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap transition-opacity hover:opacity-90"
         >
-          <MoltenSurface />
-          <span className="relative">New market</span>
+          <MetallicSurface />
+          <span className="relative text-canvas">New market</span>
         </button>
       </div>
     </div>

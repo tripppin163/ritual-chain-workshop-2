@@ -1,5 +1,6 @@
 "use client";
 
+import { MetallicSurface } from "./MetallicSurface";
 import { useState } from "react";
 import { isAddress, type Address } from "viem";
 import { activeChain, localChain } from "@/lib/chain";
@@ -208,9 +209,13 @@ export function CreateMarketForm({ disabled, onCreate }: Props) {
       <button
         type="submit"
         disabled={disabled || busy}
-        className="raised w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-faint disabled:shadow-none"
+        className="raised relative isolate w-full overflow-hidden rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-faint disabled:shadow-none"
       >
-        {busy ? "Creating…" : disabled ? "Connect a wallet to create" : "Create market"}
+        {/* A disabled button drops to the flat surface fill, so it gets no metal either. */}
+        {!(disabled || busy) && <MetallicSurface />}
+        <span className="relative">
+          {busy ? "Creating…" : disabled ? "Connect a wallet to create" : "Create market"}
+        </span>
       </button>
 
       <p className="label">Books its own resolution in the same transaction.</p>
