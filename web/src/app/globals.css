@@ -334,3 +334,43 @@ html {
 .nav-card-link-icon {
   color: var(--color-accent);
 }
+
+/* The Ritual mark in the header: a flat image given thickness by a stack of copies,
+   turned slowly on its vertical axis. The tilt keeps a top face in view so the shape
+   never flattens into a line at the halfway point of the turn. */
+.knot {
+  display: block;
+  perspective: 220px;
+}
+
+.knot-spin {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: knot-turn 16s linear infinite;
+}
+
+.knot-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes knot-turn {
+  from {
+    transform: rotateX(9deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(9deg) rotateY(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knot-spin {
+    animation: none;
+    transform: rotateX(9deg) rotateY(-26deg);
+  }
+}

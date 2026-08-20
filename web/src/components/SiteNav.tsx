@@ -4,6 +4,7 @@ import { shortAddress } from "@/lib/market";
 import { useWallet } from "@/lib/wallet";
 import CardNav, { type CardNavItem } from "./reactbits/CardNav";
 import { MetallicSurface } from "./MetallicSurface";
+import { RitualKnot } from "./RitualKnot";
 import { Wordmark } from "./Wordmark";
 import { DocsIcon, PageIcon, RepoIcon, SiteIcon, SocialIcon } from "./icons";
 
@@ -109,6 +110,7 @@ export function SiteNav() {
       menuColor="#a1a1aa"
       ease="power3.out"
       logoNode={<Wordmark />}
+      centerNode={<RitualKnot />}
       cta={
         <button
           type="button"

@@ -17,6 +17,8 @@
  *     default arrow
  *   - the container is fixed rather than absolute, so the nav stays reachable while
  *     scrolling a long board of markets
+ *   - a `centerNode` slot pinned to the middle of the bar, which is where the Ritual
+ *     mark turns
  *   - the hamburger's rules are drawn finer, and the wordmark sits beside it rather than
  *     centred: at 30x2px against a 16px wordmark the icon outweighed the identity, and a
  *     name floating alone in the middle of a 900px bar is what made the header read as a
@@ -53,6 +55,7 @@ export type CardNavItem = {
 
 export interface CardNavProps {
   logoNode?: React.ReactNode;
+  centerNode?: React.ReactNode;
   cta?: React.ReactNode;
   items: CardNavItem[];
   className?: string;
@@ -65,6 +68,7 @@ export interface CardNavProps {
 
 const CardNav: React.FC<CardNavProps> = ({
   logoNode,
+  centerNode,
   cta,
   items,
   className = '',
@@ -230,6 +234,12 @@ const CardNav: React.FC<CardNavProps> = ({
           <div className="logo-container order-1 mr-auto flex items-center md:order-none md:ml-4">
             {logoNode}
           </div>
+
+          {centerNode && (
+            <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              {centerNode}
+            </div>
+          )}
 
           <div className="card-nav-cta hidden items-center md:flex">{cta}</div>
         </div>
