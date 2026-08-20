@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { CreateMarketForm } from "./CreateMarketForm";
+import { CloseIcon } from "./icons";
 
 /**
  * Creating a market is a rare action, so it does not get to hold a third of the screen
@@ -47,7 +48,7 @@ export function NewMarketDialog({
           aria-label="Close"
           className="rounded-lg px-2 py-1 text-ink-faint transition-colors hover:text-ink"
         >
-          ✕
+          <CloseIcon />
         </button>
       </div>
 

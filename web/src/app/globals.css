@@ -37,6 +37,16 @@ html {
   color-scheme: dark;
 }
 
+::selection {
+  background-color: rgba(249, 115, 22, 0.28);
+  color: var(--color-ink);
+}
+
+input,
+textarea {
+  caret-color: var(--color-accent);
+}
+
 body {
   background-color: var(--color-canvas);
   color: var(--color-ink);
@@ -233,6 +243,30 @@ html {
   animation: rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── The chain acting ───────────────────────────────────────────────────────
+ * The one thing on this page that moves by itself. A line the chain wrote drops
+ * in, carries an accent wash for a beat, and settles. Nothing else animates on
+ * its own, so movement here reads as "the chain just did something".
+ */
+.chain-row[data-fresh] {
+  animation: chain-arrive 2.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes chain-arrive {
+  0% {
+    transform: translateY(-8px);
+    filter: blur(3px);
+    background-color: rgba(249, 115, 22, 0.16);
+  }
+  14% {
+    transform: none;
+    filter: blur(0);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -246,6 +280,7 @@ html {
   }
 
   .rise,
+  .chain-row[data-fresh],
   dialog[open],
   dialog::backdrop {
     animation: none;

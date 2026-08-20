@@ -53,3 +53,84 @@ export const PageIcon = ({ className = "" }: IconProps) => (
     <path d="M3 8h9M8.6 4.6 12 8l-3.4 3.4" {...stroke} />
   </svg>
 );
+
+/** A ripple: the Scheduler waking a contract nobody touched. */
+export const WakeIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <circle cx="8" cy="8" r="1.6" fill="currentColor" />
+    <path d="M11.3 4.7a4.7 4.7 0 0 1 0 6.6M4.7 11.3a4.7 4.7 0 0 1 0-6.6" {...stroke} />
+  </svg>
+);
+
+/** A check: an outcome recorded. */
+export const SettledIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <path d="M3.4 8.6 6.4 11.6l6.2-7.2" {...stroke} />
+  </svg>
+);
+
+/** A struck circle: an attempt that came back empty. */
+export const FailedIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <circle cx="8" cy="8" r="5.4" {...stroke} />
+    <path d="M5.6 5.6 10.4 10.4" {...stroke} />
+  </svg>
+);
+
+/** A returning arrow: stakes going back where they came from. */
+export const RefundIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <path d="M13 9.2a4.6 4.6 0 0 0-4.6-4.6H3.6" {...stroke} />
+    <path d="M6 2.2 3.2 4.6 6 7" {...stroke} />
+  </svg>
+);
+
+/** A chevron for a row that opens. */
+export const ChevronIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="12" height="12" className={`${base} ${className}`} aria-hidden>
+    <path d="M6 4l4 4-4 4" {...stroke} />
+  </svg>
+);
+
+/** A left arrow, for the way back. */
+export const BackIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="13" height="13" className={`${base} ${className}`} aria-hidden>
+    <path d="M13 8H3.6M7 3.6 3 8l4 4.4" {...stroke} />
+  </svg>
+);
+
+/** A cross, for dismissing. */
+export const CloseIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <path d="M4 4l8 8M12 4l-8 8" {...stroke} />
+  </svg>
+);
+
+/** A plus that becomes a minus when its row opens. */
+export const PlusIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <path d="M8 3.4v9.2M3.4 8h9.2" {...stroke} />
+  </svg>
+);
+
+/** A dial mid-turn: something the chain has started but not finished. */
+export const PendingIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <circle cx="8" cy="8" r="5.4" {...stroke} strokeDasharray="3 2.4" />
+  </svg>
+);
+
+/** An empty ring: a step not reached yet. */
+export const StepIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <circle cx="8" cy="8" r="4.2" {...stroke} />
+  </svg>
+);
+
+/** A filled ring: the step being worked on. */
+export const StepActiveIcon = ({ className = "" }: IconProps) => (
+  <svg viewBox="0 0 16 16" width="14" height="14" className={`${base} ${className}`} aria-hidden>
+    <circle cx="8" cy="8" r="4.2" {...stroke} />
+    <circle cx="8" cy="8" r="1.8" fill="currentColor" />
+  </svg>
+);

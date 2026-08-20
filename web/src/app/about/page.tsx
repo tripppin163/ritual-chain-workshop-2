@@ -53,6 +53,7 @@ export default function AboutPage() {
 
       <Section title="What this fork adds">
         <Steps
+          numbered={false}
           items={[
             [
               "The five functions",

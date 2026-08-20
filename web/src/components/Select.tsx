@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { ChevronIcon, SettledIcon } from "./icons";
 
 /**
  * A dropdown that belongs to this page rather than to the operating system.
@@ -99,10 +100,9 @@ export function Select<T extends string>({
       >
         {selected?.label}
         <span
-          aria-hidden
-          className={`text-ink-faint transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-ink-faint transition-transform duration-200 ${open ? "-rotate-90" : "rotate-90"}`}
         >
-          ⌄
+          <ChevronIcon />
         </span>
       </button>
 
@@ -130,8 +130,8 @@ export function Select<T extends string>({
                 >
                   {option.label}
                   {isSelected && (
-                    <span aria-hidden className="text-accent">
-                      ✓
+                    <span className="text-accent">
+                      <SettledIcon />
                     </span>
                   )}
                 </button>

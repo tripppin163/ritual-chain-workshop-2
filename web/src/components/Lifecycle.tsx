@@ -1,4 +1,5 @@
 import type { Market } from "@/lib/market";
+import { FailedIcon, PendingIcon, RefundIcon, SettledIcon, StepActiveIcon, StepIcon } from "./icons";
 
 /**
  * Where this market is in the run it books for itself at creation.
@@ -7,11 +8,13 @@ import type { Market } from "@/lib/market";
  * this contract is that the middle of it happens with nobody watching. Showing the
  * stages makes the waiting legible instead of looking like a hang.
  */
+type StageIcon = typeof StepIcon;
+
 type Stage = {
   key: string;
   label: string;
   detail: string;
-  icon: string;
+  Icon: StageIcon;
   state: "done" | "active" | "ahead" | "failed";
 };
 
@@ -24,9 +27,9 @@ export function Lifecycle({ market, block }: { market: Market; block: bigint }) 
         <li key={stage.key} className="flex gap-3">
           {/* The rail: a filled dot for what happened, hollow for what has not. */}
           <div className="flex flex-col items-center" aria-hidden>
-            <span className={`text-sm leading-6 ${toneText(stage.state)}`}>
+            <span className={`mt-1 leading-6 ${toneText(stage.state)}`}>
               <span className={stage.state === "active" ? "pulse-dot inline-block" : undefined}>
-                {stage.icon}
+                <stage.Icon />
               </span>
             </span>
             {index < stages.length - 1 && (
@@ -67,14 +70,14 @@ function buildStages(market: Market, block: bigint): Stage[] {
       key: "open",
       label: "Betting open",
       detail: `until block ${market.closeBlock}`,
-      icon: closed ? "✓" : "◉",
+      Icon: closed ? SettledIcon : StepActiveIcon,
       state: closed ? "done" : "active",
     },
     {
       key: "closed",
       label: "Window closed, waiting for the Scheduler",
       detail: `wakes the contract at block ${market.resolveBlock}`,
-      icon: !closed ? "◌" : due ? "✓" : "◌",
+      Icon: !closed ? StepIcon : due ? SettledIcon : PendingIcon,
       state: !closed ? "ahead" : due ? "done" : "active",
     },
     {
@@ -87,7 +90,7 @@ function buildStages(market: Market, block: bigint): Stage[] {
         attempts === 0
           ? "three booked, 200 blocks apart"
           : "each attempt re-rolls the TEE executor",
-      icon: attempts === 0 ? "◌" : "◉",
+      Icon: attempts === 0 ? StepIcon : StepActiveIcon,
       state: attempts === 0 ? "ahead" : settled || invalid ? "done" : "active",
     },
     {
@@ -97,7 +100,7 @@ function buildStages(market: Market, block: bigint): Stage[] {
         settled && market.observedValue !== 0n
           ? `HTTP 0x0801 → jq 0x0803 → ${market.observedValue.toString()}`
           : "HTTP 0x0801 → jq 0x0803 → one number",
-      icon: settled ? "✓" : invalid ? "✗" : "◌",
+      Icon: settled ? SettledIcon : invalid ? FailedIcon : StepIcon,
       state: settled ? "done" : invalid ? "failed" : "ahead",
     },
     {
@@ -108,7 +111,7 @@ function buildStages(market: Market, block: bigint): Stage[] {
         : settled
           ? "winners claim their share of the pool"
           : "outcome recorded on-chain",
-      icon: invalid ? "⊘" : settled ? "✓" : "◌",
+      Icon: invalid ? RefundIcon : settled ? SettledIcon : StepIcon,
       state: invalid ? "failed" : settled ? "done" : "ahead",
     },
   ];

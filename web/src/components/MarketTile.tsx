@@ -31,7 +31,7 @@ export function MarketTile({
   return (
     <Link
       href={`/market/${market.id.toString()}` as Route}
-      className="card rise group flex h-full flex-col p-5 transition-colors hover:border-line"
+      className="card group flex h-full flex-col p-5 transition-colors hover:border-line"
     >
       <div className="flex items-start justify-between gap-3">
         <span className="flex items-center gap-2">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { BackIcon, PlusIcon } from "./icons";
 
 /** Every page that is not the board opens with the way off it. */
 export function BackLink({
@@ -14,7 +15,7 @@ export function BackLink({
       href={href as Route}
       className="inline-flex items-center gap-2 text-[13px] text-ink-faint transition-colors hover:text-ink"
     >
-      <span aria-hidden>←</span>
+      <BackIcon />
       {label}
     </Link>
   );
@@ -44,13 +45,24 @@ export function Section({ title, children }: { title: string; children: React.Re
   );
 }
 
-export function Steps({ items }: { items: [string, string][] }) {
+/**
+ * Numbered only where the order is the information — a sequence of steps. A list of
+ * things a project contains is not a sequence, and numbering it is decoration.
+ */
+export function Steps({
+  items,
+  numbered = true,
+}: {
+  items: [string, string][];
+  numbered?: boolean;
+}) {
+  const Tag = numbered ? "ol" : "ul";
   return (
-    <ol className="space-y-6">
+    <Tag className="space-y-6">
       {items.map(([title, body], index) => (
         <li key={title} className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-4">
           <span className="tabular pt-0.5 text-[13px] text-accent">
-            {String(index + 1).padStart(2, "0")}
+            {numbered ? String(index + 1).padStart(2, "0") : "—"}
           </span>
           <div>
             <p className="text-[15px] font-medium text-ink">{title}</p>
@@ -58,7 +70,7 @@ export function Steps({ items }: { items: [string, string][] }) {
           </div>
         </li>
       ))}
-    </ol>
+    </Tag>
   );
 }
 
@@ -89,11 +101,8 @@ export function Faq({ items }: { items: [string, string][] }) {
         <details key={question} className="group py-4">
           <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-[15px] font-medium text-ink">
             {question}
-            <span
-              aria-hidden
-              className="mt-1 shrink-0 text-ink-faint transition-transform group-open:rotate-45"
-            >
-              +
+            <span className="mt-1 shrink-0 text-ink-faint transition-transform group-open:rotate-45">
+              <PlusIcon />
             </span>
           </summary>
           <p className="mt-2 pr-8">{answer}</p>

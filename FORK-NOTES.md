@@ -177,6 +177,13 @@ Three screens, split so the one people act on stays about acting:
   the wording, sort by newest, resolving soonest or largest pool, and page through with
   "Show more". Creating a market is a dialog behind one button rather than a form holding
   a third of the screen permanently, because creating is rare and reading is constant.
+
+  Beside it runs a column of what the chain did on its own: the Scheduler waking a
+  contract, an executor reading an oracle, a market settling. Every line there was
+  written by a scheduled execution, so human actions — creating, betting, claiming — are
+  deliberately absent; a counter at the top says how many executions ran with nobody
+  clicking anything. A line arriving is the only motion on the page that starts by
+  itself, which is what makes "no server" visible rather than merely claimed.
 - **One market** — the implied YES price after every bet, where the market sits in the
   run it booked for itself, and its whole history read from the contract's logs. There
   is no indexer and no backend behind any of it.

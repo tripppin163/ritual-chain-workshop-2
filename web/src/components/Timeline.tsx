@@ -1,12 +1,13 @@
 import type { MarketEvent } from "@/lib/events";
 import { shortAddress } from "@/lib/market";
+import { FailedIcon, PendingIcon, SettledIcon, StepIcon } from "./icons";
 
-const TONE: Record<MarketEvent["tone"], { icon: string; className: string }> = {
-  neutral: { icon: "·", className: "text-ink-soft" },
-  good: { icon: "✓", className: "text-success" },
-  warn: { icon: "◌", className: "text-warning" },
-  bad: { icon: "✗", className: "text-danger" },
-};
+const TONE = {
+  neutral: { Icon: StepIcon, className: "text-ink-faint" },
+  good: { Icon: SettledIcon, className: "text-success" },
+  warn: { Icon: PendingIcon, className: "text-warning" },
+  bad: { Icon: FailedIcon, className: "text-danger" },
+} as const;
 
 /** Everything the market did, read from its own logs. No indexer, no backend. */
 export function Timeline({ events }: { events: MarketEvent[] }) {
@@ -23,8 +24,8 @@ export function Timeline({ events }: { events: MarketEvent[] }) {
             key={`${event.block}-${event.logIndex}`}
             className="grid grid-cols-[auto_1fr] gap-3 border-l border-hairline pl-3"
           >
-            <span aria-hidden className={`text-sm leading-5 ${tone.className}`}>
-              {tone.icon}
+            <span className={`mt-0.5 ${tone.className}`}>
+              <tone.Icon />
             </span>
             <div className="min-w-0">
               <p className="text-sm leading-5 text-ink">{event.text}</p>

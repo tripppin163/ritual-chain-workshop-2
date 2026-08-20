@@ -5,11 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { predictAbi } from "@/lib/predict-abi";
 import { HAS_ADDRESS, PREDICT_ADDRESS, RPC_URL, activeChain, publicClient } from "@/lib/chain";
+import { useChainActivity } from "@/lib/chainActivity";
 import { canSee, useInvites } from "@/lib/invites";
 import { shortAddress, type Market } from "@/lib/market";
 import { useOracle } from "@/lib/oracle";
 import { useTransactions, writeContract } from "@/lib/tx";
 import { readStakes, type Stakes } from "@/components/MarketCard";
+import { ChainFeed } from "@/components/ChainFeed";
 import { MarketTile } from "@/components/MarketTile";
 import {
   FILTERS,
@@ -46,6 +48,7 @@ export default function Page() {
 
   const oracle = useOracle();
   const invites = useInvites();
+  const activity = useChainActivity();
   const { toast, dismiss, send, account } = useTransactions(() => refresh());
 
   const refresh = useCallback(async () => {
@@ -132,7 +135,7 @@ export default function Page() {
           </Link>
         </p>
 
-        <dl className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-hairline pt-6 sm:grid-cols-3 lg:grid-cols-5">
+        <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-hairline pt-6 sm:grid-cols-3 lg:grid-cols-6">
           <Stat label="Network">
             {activeChain.name}
             <span className="ml-1.5 text-ink-faint">{activeChain.id}</span>
@@ -170,23 +173,24 @@ export default function Page() {
       {!HAS_ADDRESS && <SetupPanel />}
       {HAS_ADDRESS && error && <ErrorPanel message={error} />}
 
-      <section id="markets">
-        {chain && (
-          <MarketToolbar
-            markets={readable}
-            filter={filter}
-            onFilter={setFilter}
-            query={query}
-            onQuery={setQuery}
-            sort={sort}
-            onSort={setSort}
-            onCreate={() => setCreating(true)}
-          />
-        )}
+      {chain && (
+        <MarketToolbar
+          markets={readable}
+          filter={filter}
+          onFilter={setFilter}
+          query={query}
+          onQuery={setQuery}
+          sort={sort}
+          onSort={setSort}
+          onCreate={() => setCreating(true)}
+        />
+      )}
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <section id="markets">
 
         {!chain && HAS_ADDRESS && !error && (
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <MarketCardSkeleton />
+          <div className="grid gap-5 sm:grid-cols-2">
             <MarketCardSkeleton />
             <MarketCardSkeleton />
           </div>
@@ -200,7 +204,7 @@ export default function Page() {
           </p>
         )}
 
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {visible.map((market) => (
             <MarketTile
               key={market.id.toString()}
@@ -234,7 +238,16 @@ export default function Page() {
             </button>
           </div>
         )}
-      </section>
+        </section>
+
+        <aside className="order-first lg:order-none lg:sticky lg:top-28">
+          <ChainFeed
+            actions={activity.actions}
+            executions={activity.executions}
+            settledMarkets={activity.settledMarkets}
+          />
+        </aside>
+      </div>
 
       <NewMarketDialog
         open={creating}
