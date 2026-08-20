@@ -6,12 +6,20 @@
  * Two markets tell you nothing about a grid, a filter bar or a "show more" button. This
  * creates a spread of questions with different windows and stakes so the list has
  * something to sort, search and paginate.
+ *
+ * FIRST and STEP set how soon the earliest market closes and how far apart the rest
+ * follow, in seconds. The defaults spread them over half an hour, which is right for
+ * poking at the UI and wrong for a recording — there, a short ladder makes the chain
+ * settle one market after another while the camera is running.
  */
 import { network } from "hardhat";
 import { parseEther } from "viem";
 import { COMPARATOR } from "./local-stack.ts";
 
 const COUNT = Number(process.env.COUNT ?? 16);
+const FIRST = Number(process.env.FIRST ?? 60);
+const STEP = Number(process.env.STEP ?? 137);
+const RESOLVE_DELAY = BigInt(process.env.RESOLVE_DELAY ?? 30);
 const ORACLE_URL = process.env.ORACLE_URL ?? "http://127.0.0.1:3000/api/oracle/eth";
 
 const QUESTIONS: [string, bigint, keyof typeof COMPARATOR][] = [
@@ -39,7 +47,7 @@ const wallets = await viem.getWalletClients();
 for (let index = 0; index < COUNT; index++) {
   const [question, target, comparator] = QUESTIONS[index % QUESTIONS.length]!;
   // A spread of windows, so some close within the demo and some stay open.
-  const bettingSeconds = BigInt(60 + ((index * 137) % 1_800));
+  const bettingSeconds = BigInt(FIRST + ((index * STEP) % 1_800));
 
   await predict.write.createMarket([
     {
@@ -49,7 +57,7 @@ for (let index = 0; index < COUNT; index++) {
       target,
       comparator: COMPARATOR[comparator],
       bettingSeconds,
-      resolveDelaySeconds: 30n,
+      resolveDelaySeconds: RESOLVE_DELAY,
       viewers: [],
     },
   ]);

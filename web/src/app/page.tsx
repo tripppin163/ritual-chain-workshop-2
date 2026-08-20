@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther } from "viem";
 import { predictAbi } from "@/lib/predict-abi";
-import { HAS_ADDRESS, PREDICT_ADDRESS, RPC_URL, activeChain, publicClient } from "@/lib/chain";
+import { HAS_ADDRESS, PREDICT_ADDRESS, RPC_URL, activeChain, localChain, publicClient } from "@/lib/chain";
 import { useChainActivity } from "@/lib/chainActivity";
 import { canSee, useInvites } from "@/lib/invites";
 import { shortAddress, type Market } from "@/lib/market";
@@ -168,6 +168,25 @@ export default function Page() {
             )}
           </Stat>
         </dl>
+
+        {activeChain.id === localChain.id && (
+          // The first thing anyone reads in that row is the chain, so the reason it says
+          // Local Hardhat belongs next to it rather than only in the repository notes.
+          <p className="mt-5 max-w-3xl text-[13px] leading-relaxed text-ink-faint">
+            Ritual's testnet is unreachable, so this runs on a local node with the
+            Scheduler and the precompiles installed at the addresses they hold on chain
+            1979. The contract is not adapted for it: it calls{" "}
+            <span className="tabular text-ink-soft">0x0801</span> and{" "}
+            <span className="tabular text-ink-soft">0x0803</span> exactly as it would on
+            Ritual, and the executor here plays the roles a plain node does not have.{" "}
+            <Link
+              href="/architecture"
+              className="text-ink-soft underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+            >
+              What runs where →
+            </Link>
+          </p>
+        )}
       </header>
 
       {!HAS_ADDRESS && <SetupPanel />}

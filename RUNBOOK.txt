@@ -60,6 +60,22 @@ Creates a spread of markets with different windows, targets and stakes, so the g
 the filters, the search and the "Show more" button all have something to work on.
 COUNT defaults to 16.
 
+FIRST, STEP and RESOLVE_DELAY set the betting window of the first market, how much each
+following market adds to it, and how long after closing the Scheduler resolves — all in
+seconds. Defaults are 60, 137 and 30, which spreads the markets over half an hour.
+
+Two things to know if you are timing a demo. The contract floors betting at 30s and the
+resolve delay at 15s. And deadlines are counted in blocks, not wall clock: seeding mines
+a block per transaction, so a batch of markets burns through part of its own window the
+moment it is created. A window shorter than the seeding burst has already expired by the
+time the page loads.
+
+  PREDICT_ADDRESS=0x... COUNT=8 FIRST=110 STEP=5 RESOLVE_DELAY=15 \
+    npx hardhat run scripts/local-seed.ts
+
+That is the ladder behind docs/demo.gif: eight markets settling one after another, a few
+seconds apart, starting about a minute after they are created.
+
 
 4. DELETING TEST DATA
 ---------------------

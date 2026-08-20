@@ -2,6 +2,13 @@
 
 A self-resolving binary prediction market on [Ritual Chain](https://docs.ritualfoundation.org).
 
+![Markets settling themselves, with nothing being clicked](docs/demo.gif)
+
+*Nothing is clicked in that recording.* Markets reach their block deadline, the Scheduler
+wakes the contract, an executor reads the oracle inside a TEE, and the count of executions
+the chain performed on its own climbs while the page just watches. Every row in that feed
+is built from an event the contract emitted — the frontend cannot write one.
+
 > **This fork** implements the five functions the starter leaves blank, adds the mocks
 > and the test suites the README below refers to, builds the `web/` frontend, and makes
 > the whole lifecycle runnable offline while the testnet is down.
