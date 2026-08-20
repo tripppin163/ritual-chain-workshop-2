@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteBackground } from "@/components/SiteBackground";
+import { SpecularField } from "@/components/SpecularField";
 import { WalletProvider } from "@/lib/wallet";
 import "./globals.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SiteNav />
           {children}
         </WalletProvider>
+        <SpecularField />
       </body>
     </html>
   );
