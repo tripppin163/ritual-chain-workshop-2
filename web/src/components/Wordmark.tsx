@@ -3,19 +3,20 @@ import Link from "next/link";
 /**
  * The site's name, and the way back to the board from anywhere.
  *
- * Plain type on purpose. The molten field was cut into these letters and it worked
- * mechanically, but at 21px the material is too fine to read as metal — the wordmark
- * only lost contrast against the flat white it replaced. The effect stayed on the two
- * primary buttons, where the surface is big enough to show it.
+ * Set as a lockup rather than as a title. "Ritual" is the chain this runs on — context,
+ * and so it stays quiet; "Predict" is what this app does with it, and carries the ink.
+ * Weight 500 rather than 600 because type on a near-black field optically gains about
+ * half a step, and the open tracking is what keeps two words from fusing into a slab.
  */
 export function Wordmark() {
   return (
     <Link
       href="/"
       aria-label="Ritual Predict — back to the markets"
-      className="text-[19px] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink transition-opacity hover:opacity-80 sm:text-[21px]"
+      className="text-[15px] font-medium tracking-[0.01em] whitespace-nowrap transition-opacity hover:opacity-80 sm:text-[16px]"
     >
-      Ritual Predict
+      <span className="text-ink-soft">Ritual</span>
+      <span className="text-ink"> Predict</span>
     </Link>
   );
 }
