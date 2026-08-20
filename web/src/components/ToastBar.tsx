@@ -7,7 +7,7 @@ export function ToastBar({ toast, onDismiss }: { toast: Toast; onDismiss: () => 
     toast.kind === "error"
       ? "border-danger/40 text-danger"
       : toast.kind === "done"
-        ? "border-accent/40 text-accent"
+        ? "border-warning/40 text-warning"
         : "border-warning/40 text-warning";
   const Icon =
     toast.kind === "error" ? FailedIcon : toast.kind === "done" ? SettledIcon : PendingIcon;

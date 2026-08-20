@@ -130,7 +130,7 @@ export default function Page() {
         </h1>
         <p className="mt-2 text-[15px] text-ink-soft">
           Nobody presses resolve.{" "}
-          <Link href="/how-it-works" className="text-accent transition-opacity hover:opacity-80">
+          <Link href="/how-it-works" className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink">
             How it works →
           </Link>
         </p>

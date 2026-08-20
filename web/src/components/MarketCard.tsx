@@ -75,7 +75,7 @@ export function MarketCard({
             {compact ? (
               market.question
             ) : (
-              <Link href={`/market/${market.id.toString()}` as Route} className="transition-colors hover:text-accent">
+              <Link href={`/market/${market.id.toString()}` as Route} className="transition-opacity hover:opacity-70">
                 {market.question}
               </Link>
             )}

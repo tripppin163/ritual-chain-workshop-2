@@ -94,11 +94,11 @@ export default function AboutPage() {
       </Section>
 
       <p className="mt-16 text-[15px]">
-        <Link href="/architecture" className="text-accent transition-opacity hover:opacity-80">
+        <Link href="/architecture" className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink">
           How it is built →
         </Link>
         <span className="mx-3 text-ink-faint">·</span>
-        <Link href="/" className="text-accent transition-opacity hover:opacity-80">
+        <Link href="/" className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink">
           Back to the markets →
         </Link>
       </p>

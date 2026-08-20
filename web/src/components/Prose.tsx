@@ -61,7 +61,7 @@ export function Steps({
     <Tag className="space-y-6">
       {items.map(([title, body], index) => (
         <li key={title} className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-4">
-          <span className="tabular pt-0.5 text-[13px] text-accent">
+          <span className="tabular pt-0.5 text-[13px] text-ink-faint">
             {numbered ? String(index + 1).padStart(2, "0") : "—"}
           </span>
           <div>
@@ -126,7 +126,7 @@ export function Out({ href, children }: { href: string; children: React.ReactNod
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="text-accent transition-opacity hover:opacity-80"
+      className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink"
     >
       {children}
     </a>

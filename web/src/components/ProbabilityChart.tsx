@@ -91,8 +91,8 @@ export function ProbabilityChart({ points }: { points: PricePoint[] }) {
             </g>
           ))}
 
-          <path d={area} fill="#f97316" opacity="0.12" />
-          <path d={line} fill="none" stroke="#f97316" strokeWidth="2" strokeLinejoin="round" />
+          <path d={area} fill="#fafaf9" opacity="0.09" />
+          <path d={line} fill="none" stroke="#fafaf9" strokeWidth="2" strokeLinejoin="round" />
 
           {active && (
             <>
@@ -105,18 +105,18 @@ export function ProbabilityChart({ points }: { points: PricePoint[] }) {
               />
               {/* 2px surface ring, so the marker stays readable on top of the line. */}
               <circle cx={x(active.block)} cy={y(active.yesShare)} r="6" fill="#111113" />
-              <circle cx={x(active.block)} cy={y(active.yesShare)} r="4" fill="#f97316" />
+              <circle cx={x(active.block)} cy={y(active.yesShare)} r="4" fill="#fafaf9" />
             </>
           )}
 
           {/* The only always-on value label: the current price. */}
-          <circle cx={x(last.block)} cy={y(last.yesShare)} r="3.5" fill="#f97316" />
+          <circle cx={x(last.block)} cy={y(last.yesShare)} r="3.5" fill="#fafaf9" />
           <text
             x={x(last.block) + 8}
             y={y(last.yesShare) + 4}
             className="tabular"
             fontSize="11"
-            fill="#f97316"
+            fill="#fafaf9"
           >
             {last.yesShare.toFixed(1)}%
           </text>

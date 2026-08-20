@@ -36,17 +36,18 @@ export function SiteBackground() {
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700"
       style={{
-        opacity: proseHeavy ? 0.28 : 1,
-        maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 88%)",
-        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 88%)",
+        opacity: proseHeavy ? 0.18 : 0.55,
+        maskImage: "linear-gradient(to bottom, black 0%, black 30%, transparent 72%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 30%, transparent 72%)",
       }}
     >
       <MoltenMetal
-        // Exactly the parameters from the chosen preset: two colours, everything else
-        // left at the component's own defaults. An earlier pass overrode scale, glow
-        // and blackPoint "to taste" and flattened the shader into plain black.
+        // Two colours, everything else left at the component's own defaults; overriding
+        // scale, glow and blackPoint "to taste" once flattened the shader into plain
+        // black. The field is silver rather than the preset's orange, because with a
+        // monochrome accent an orange sky would be the only hue on the page.
         color1="#000000"
-        color2="#ff6800"
+        color2="#fafaf9"
         speed={reducedMotion ? 0 : 0.35}
         mouseInteraction={!reducedMotion}
       />

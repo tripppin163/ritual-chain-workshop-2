@@ -129,7 +129,7 @@ export default function HowItWorksPage() {
       </Section>
 
       <p className="mt-16 text-[15px]">
-        <Link href="/" className="text-accent transition-opacity hover:opacity-80">
+        <Link href="/" className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink">
           Back to the markets →
         </Link>
       </p>

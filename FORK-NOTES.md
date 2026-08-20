@@ -163,12 +163,15 @@ Each of these breaks a path the README tells you to walk:
 
 `web/` is Next.js + viem, no wallet-connect stack: one chain, one injected connector.
 
-Its tokens are lifted from Ritual's own builder site (skills.ritualfoundation.org), so
-this app and their docs read as the same product: near-neutral zinc surfaces, one orange
-accent, three status colours, Inter throughout. The restraint is the design — orange
-appears on the primary action, the live oracle number and the price line, and almost
-nowhere else. Status never rides on colour alone: every state ships a dot, a word, and
-for a settled market its outcome.
+Its surfaces come from Ritual's own builder site (skills.ritualfoundation.org) —
+near-neutral zinc, Inter throughout — but the accent is monochrome rather than their
+orange. That is a deliberate trade: an orange-on-black board carries an association
+nobody wants, and dropping hue from the accent leaves colour meaning exactly one thing
+here, which is state. Green reads as settled, amber as waiting, red as failed, and
+nothing competes with them. Emphasis comes from weight and lightness instead.
+
+Status never rides on colour alone either: every state ships a dot, a word, and for a
+settled market its outcome.
 
 Three screens, split so the one people act on stays about acting:
 

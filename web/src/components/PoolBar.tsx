@@ -29,7 +29,7 @@ export function PoolBar({ market }: { market: Market }) {
         />
         <div
           className={`h-full flex-1 rounded-full transition-all duration-500 ${
-            settled && yesWon ? "bg-line" : "bg-ink-faint"
+            settled && yesWon ? "bg-line" : "bg-[#52525b]"
           }`}
         />
       </div>

@@ -46,7 +46,7 @@ export function MarketTile({
           )}
         </span>
         {position && position.claimable > 0n && (
-          <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[12px] font-medium text-accent">
+          <span className="rounded-full bg-surface px-2 py-0.5 text-[12px] font-medium text-ink">
             {ritual(position.claimable)} to claim
           </span>
         )}
@@ -69,7 +69,7 @@ export function MarketTile({
             className={`h-full rounded-full ${settled && !yesWon ? "bg-accent/30" : "bg-accent"}`}
             style={{ width: `${total === 0n ? 0 : yesPercent}%` }}
           />
-          <div className={`h-full flex-1 rounded-full ${settled && yesWon ? "bg-line" : "bg-ink-faint"}`} />
+          <div className={`h-full flex-1 rounded-full ${settled && yesWon ? "bg-line" : "bg-[#52525b]"}`} />
         </div>
 
         <p className="tabular mt-3 truncate text-[13px] text-ink-faint">

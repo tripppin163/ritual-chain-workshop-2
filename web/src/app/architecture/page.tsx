@@ -130,7 +130,7 @@ export default function ArchitecturePage() {
           Read the source →
         </Out>
         <span className="mx-3 text-ink-faint">·</span>
-        <Link href="/how-it-works" className="text-accent transition-opacity hover:opacity-80">
+        <Link href="/how-it-works" className="text-ink underline decoration-ink-faint decoration-1 underline-offset-4 transition-colors hover:decoration-ink">
           How a market settles →
         </Link>
       </p>

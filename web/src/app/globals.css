@@ -21,8 +21,11 @@
   --color-ink-soft: #a1a1aa;
   --color-ink-faint: #71717a;
 
-  --color-accent: #f97316;
-  --color-accent-muted: #c2410c;
+  /* Monochrome by decision: the accent carries emphasis, never hue. That leaves colour
+   * to mean one thing on this page — state — so green reads as settled, amber as
+   * waiting and red as failed without competing with a brand colour. */
+  --color-accent: #fafaf9;
+  --color-accent-muted: #a1a1aa;
   --color-success: #22c55e;
   --color-warning: #eab308;
   --color-danger: #ef4444;
@@ -38,7 +41,7 @@ html {
 }
 
 ::selection {
-  background-color: rgba(249, 115, 22, 0.28);
+  background-color: rgba(250, 250, 249, 0.22);
   color: var(--color-ink);
 }
 
@@ -136,16 +139,16 @@ body {
   outline: none;
   box-shadow:
     0 0 0 2px var(--color-canvas),
-    0 0 0 4px rgba(249, 115, 22, 0.6);
+    0 0 0 4px rgba(250, 250, 249, 0.55);
   border-radius: 8px;
 }
 
 /* Raised: the primary action sits on top of the card, catching the same light. */
 .raised {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    0 1px 2px rgba(0, 0, 0, 0.5),
-    0 8px 18px -10px rgba(249, 115, 22, 0.6);
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 8px 20px -10px rgba(250, 250, 249, 0.25);
 }
 
 /* Raised, but quiet — secondary controls and the segmented switch. */
@@ -256,7 +259,7 @@ html {
   0% {
     transform: translateY(-8px);
     filter: blur(3px);
-    background-color: rgba(249, 115, 22, 0.16);
+    background-color: rgba(250, 250, 249, 0.14);
   }
   14% {
     transform: none;
