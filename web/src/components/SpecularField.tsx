@@ -248,6 +248,8 @@ export function SpecularField() {
     mutations.observe(document.body, { childList: true, subtree: true });
 
     const lit = new Map<Element, Lit>();
+    /** The open modal, if there is one. Set by the same observer that moves the canvas. */
+    let modal: Element | null = null;
     let pointer: { x: number; y: number } | null = null;
     let running = false;
     let raf = 0;
@@ -267,6 +269,11 @@ export function SpecularField() {
             visible.delete(el);
             continue;
           }
+          // A modal makes everything behind it inert, and the canvas has to ride inside
+          // it to be painted at all — so without this the board's own controls keep
+          // lighting up, over the top of the dialog, in the shape of whatever sits
+          // behind it.
+          if (modal && !modal.contains(el)) continue;
           const rect = el.getBoundingClientRect();
           if (rect.width < 4 || rect.height < 4) continue;
           const dx = Math.max(rect.left - pointer.x, 0, pointer.x - rect.right);
@@ -396,6 +403,7 @@ export function SpecularField() {
     const host = canvas.parentElement;
     const follow = () => {
       const open = document.querySelector("dialog[open]");
+      modal = open;
       const parent = open ?? host;
       if (parent && canvas.parentElement !== parent) parent.appendChild(canvas);
     };
