@@ -17,7 +17,7 @@ import MetallicPaint from "./reactbits/MetallicPaint";
  */
 export function MetallicSurface({ radius = 8 }: { radius?: number }) {
   const hostRef = useRef<HTMLSpanElement>(null);
-  const [shape, setShape] = useState<string>();
+  const [shape, setShape] = useState<{ src: string; aspect: number }>();
 
   useEffect(() => {
     const host = hostRef.current;
@@ -60,7 +60,7 @@ export function MetallicSurface({ radius = 8 }: { radius?: number }) {
       );
       ctx.fill();
 
-      setShape(canvas.toDataURL("image/png"));
+      setShape({ src: canvas.toDataURL("image/png"), aspect: w / h });
     };
 
     draw();
@@ -69,13 +69,20 @@ export function MetallicSurface({ radius = 8 }: { radius?: number }) {
     return () => observer.disconnect();
   }, [radius]);
 
+  // The flow is drawn in units of the element's height, so a control much wider than it
+  // is tall gets one stretched feature dragged across the whole plate instead of metal.
+  // Densifying the pattern buys some of it back, but past roughly six to one there is no
+  // setting that reads as a surface, so a full-width form button keeps the flat accent
+  // fill it already sits on. Metal is for things shaped like buttons.
+  const tooWide = (shape?.aspect ?? 0) > 6;
+
   return (
     <span ref={hostRef} aria-hidden className="absolute -inset-1.5 block">
-      {shape && (
+      {shape && !tooWide && (
         <MetallicPaint
-          imageSrc={shape}
+          imageSrc={shape.src}
           speed={0.35}
-          scale={1.8}
+          scale={1.8 * Math.max(1, shape.aspect / 3.2)}
           liquid={0.55}
           brightness={1.15}
           contrast={1.05}
